@@ -2,7 +2,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { ethers, network } from "hardhat";
 import { ChainId, setDeploymentSupportedChains } from "../utilities";
-import { xMerlin } from "../test/constants";
+import {LothricFin, xMerlin} from "../test/constants";
 import { BentoBoxV1 } from "../typechain";
 
 const ParametersPerChain = {
@@ -13,6 +13,10 @@ const ParametersPerChain = {
   [ChainId.Moonriver]: {
     weth: "0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c",
     owner: xMerlin,
+  },
+  [ChainId.Localhost]: {
+    weth: "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
+    owner: LothricFin,
   },
 };
 
