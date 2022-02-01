@@ -36,14 +36,7 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      mainnet: process.env.ETHERSCAN_TOKEN,
-      ropsten: process.env.ETHERSCAN_TOKEN,
-      kovan: process.env.ETHERSCAN_TOKEN,
-      optimisticEthereum: process.env.ETHERSCAN_TOKEN,
-      arbitrumOne: process.env.ETHERSCAN_TOKEN,
       avalanche: process.env.SNOWTRACE_TOKEN,
-      opera: process.env.FTMSCAN_TOKEN,
-      bsc: process.env.BSCSCAN_TOKEN
     }
   },
   gasReporter: {
