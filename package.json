@@ -1,7 +1,6 @@
 {
-  "name": "magic-internet-money",
-  "description": "magic-internet-money smart contracts",
-  "homepage": "https://github.com/Abracadabra-money/magic-internet-money",
+  "name": "nereus-stable-coin",
+  "description": "nereus-stable-coin smart contracts",
   "license": "MIT",
   "scripts": {
     "clean": "hardhat clean",

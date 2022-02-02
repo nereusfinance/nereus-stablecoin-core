@@ -26,7 +26,7 @@ import "@boringcrypto/boring-solidity/contracts/interfaces/IMasterContract.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringRebase.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 import "@sushiswap/bentobox-sdk/contracts/IBentoBoxV1.sol";
-import "./MagicInternetMoney.sol";
+import "./NereusStableCoin.sol";
 import "./interfaces/IOracle.sol";
 import "./interfaces/ISwapper.sol";
 
@@ -539,6 +539,6 @@ contract Cauldron is BoringOwnable, IMasterContract {
     function reduceSupply(uint256 amount) public {
         require(msg.sender == masterContract.owner(), "Caller is not the owner");
         bentoBox.withdraw(magicInternetMoney, address(this), address(this), amount, 0);
-        MagicInternetMoney(address(magicInternetMoney)).burn(amount);
+        NereusStableCoin(address(magicInternetMoney)).burn(amount);
     }
 }

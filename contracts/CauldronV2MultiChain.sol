@@ -26,7 +26,7 @@ import "@boringcrypto/boring-solidity/contracts/interfaces/IMasterContract.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringRebase.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 import "@sushiswap/bentobox-sdk/contracts/IBentoBoxV1.sol";
-import "./MagicInternetMoney.sol";
+import "./NereusStableCoin.sol";
 import "./interfaces/IOracle.sol";
 import "./interfaces/ISwapper.sol";
 

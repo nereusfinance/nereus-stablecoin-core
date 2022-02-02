@@ -71,7 +71,7 @@ const config: HardhatUserConfig = {
       forking: {
         enabled: process.env.FORKING === "true",
         url: "https://api.avax.network/ext/bc/C/rpc",
-        blockNumber: (process.env.FORKING === "true" && parseInt(process.env.FORKING_BLOCK!)) || undefined,
+        // blockNumber: (process.env.FORKING === "true" && parseInt(process.env.FORKING_BLOCK!)) || undefined,
       },
       accounts,
       gasPrice: 0,
