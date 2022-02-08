@@ -2,21 +2,13 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { ethers, network } from "hardhat";
 import { ChainId, setDeploymentSupportedChains } from "../utilities";
-import { xMerlin } from "../test/constants";
-import { BentoBoxV1 } from "../typechain";
+import { LothricFin } from "../test/constants";
+import { DegenBox } from "../typechain";
 
 const ParametersPerChain = {
-  [ChainId.Boba]: {
-    weth: "0xdeaddeaddeaddeaddeaddeaddeaddeaddead0000",
-    owner: xMerlin,
-  },
-  [ChainId.Moonriver]: {
-    weth: "0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c",
-    owner: xMerlin,
-  },
   [ChainId.Localhost]: {
-    weth: "0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c",
-    owner: xMerlin,
+    weth: "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
+    owner: LothricFin,
   },
 };
 
@@ -28,23 +20,28 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const chainId = await hre.getChainId();
   const parameters = ParametersPerChain[parseInt(chainId)];
 
-  await deploy("BentoBoxV1", {
+  const tx = await deploy("DegenBox", {
     from: deployer,
     args: [parameters.weth],
     log: true,
     deterministicDeployment: false,
   });
 
-  const BentoBoxV1 = await ethers.getContract<BentoBoxV1>("BentoBoxV1");
+  const DegenBox = await ethers.getContract<DegenBox>("DegenBox");
 
-  if ((await BentoBoxV1.owner()) != parameters.owner && network.name !== "hardhat") {
-    await BentoBoxV1.transferOwnership(parameters.owner, true, false);
+  if ((await DegenBox.owner()) != parameters.owner && network.name !== "hardhat") {
+    await DegenBox.transferOwnership(parameters.owner, true, false);
   }
+
+  await deployments.save("DegenBox", {
+    abi: [],
+    address: tx.address,
+  });
 };
 
 export default deployFunction;
 
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
-deployFunction.tags = ["BobaMoonriverDegenBox"];
-deployFunction.dependencies = [];
+deployFunction.tags = ["DegenBox"];
+deployFunction.dependencies = ["NUSD"];
