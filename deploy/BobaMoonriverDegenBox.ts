@@ -14,6 +14,10 @@ const ParametersPerChain = {
     weth: "0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c",
     owner: xMerlin,
   },
+  [ChainId.Localhost]: {
+    weth: "0x639a647fbe20b6c8ac19e48e2de44ea792c62c5c",
+    owner: xMerlin,
+  },
 };
 
 const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {

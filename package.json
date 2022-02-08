@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "hardhat clean",
     "build": "hardhat compile",
+    "fork": "hardhat node",
     "build:flat": "hardhat compile && cross-env CONTRACTS_PATH=./contracts-flat hardhat compile",
     "rebuild": "hardhat clean && hardhat compile",
     "node": "cross-env HARDHAT_LOCAL_NODE=1 hardhat node",
