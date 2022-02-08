@@ -6,7 +6,7 @@ import { NereusStableCoin } from "../typechain";
 
 const ParametersPerChain = {
   [ChainId.Localhost]: {
-    weth: "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
+    wavax: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
     owner: LothricFin,
   },
 };

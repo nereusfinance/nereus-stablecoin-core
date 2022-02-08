@@ -7,9 +7,9 @@ import { CauldronV2MultiChain } from "../typechain";
 
 const ParametersPerChain = {
   [ChainId.Localhost]: {
-    weth: "0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab",
-    owner: LothricFin
-  }
+    wavax: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
+    owner: LothricFin,
+  },
 };
 
 const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
@@ -20,8 +20,8 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const chainId = await hre.getChainId();
   const parameters = ParametersPerChain[parseInt(chainId)];
 
-  const nusd = (await deployments.get('NereusStableCoin')).address;
-  const degenBox = (await deployments.get('DegenBox')).address;
+  const nusd = (await deployments.get("NereusStableCoin")).address;
+  const degenBox = (await deployments.get("DegenBox")).address;
 
   const tx = await deploy("CauldronV2MultiChain", {
     from: deployer,
