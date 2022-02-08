@@ -753,7 +753,7 @@ interface IBentoBoxV1 {
     ) external returns (uint256 amountOut, uint256 shareOut);
 }
 
-// File contracts/MagicInternetMoney.sol
+// File contracts/NereusStableCoin.sol
 // License-Identifier: MIT
 
 // Magic Internet Money
