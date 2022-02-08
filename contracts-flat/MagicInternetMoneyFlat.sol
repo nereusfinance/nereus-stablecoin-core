@@ -668,7 +668,7 @@ contract BoringOwnable is BoringOwnableData {
     }
 }
 
-// File contracts/MagicInternetMoney.sol
+// File contracts/NereusStableCoin.sol
 // License-Identifier: MIT
 
 // Magic Internet Money
