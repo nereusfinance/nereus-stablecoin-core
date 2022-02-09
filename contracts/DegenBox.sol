@@ -806,7 +806,7 @@ contract DegenBox is MasterContractManager, BoringBatchable {
         address to,
         uint256 amount,
         uint256 share
-    ) public payable allowed(from) returns (uint256 amountOut, uint256 shareOut) {
+    ) public payable returns (uint256 amountOut, uint256 shareOut) {
         // Checks
         require(to != address(0), "BentoBox: to not set"); // To avoid a bad UI from burning funds
 
@@ -869,7 +869,7 @@ contract DegenBox is MasterContractManager, BoringBatchable {
         address to,
         uint256 amount,
         uint256 share
-    ) public allowed(from) returns (uint256 amountOut, uint256 shareOut) {
+    ) public returns (uint256 amountOut, uint256 shareOut) {
         // Checks
         require(to != address(0), "BentoBox: to not set"); // To avoid a bad UI from burning funds
 
@@ -921,7 +921,7 @@ contract DegenBox is MasterContractManager, BoringBatchable {
         address from,
         address to,
         uint256 share
-    ) public allowed(from) {
+    ) public {
         // Checks
         require(to != address(0), "BentoBox: to not set"); // To avoid a bad UI from burning funds
 
@@ -944,7 +944,7 @@ contract DegenBox is MasterContractManager, BoringBatchable {
         address from,
         address[] calldata tos,
         uint256[] calldata shares
-    ) public allowed(from) {
+    ) public {
         // Checks
         require(tos[0] != address(0), "BentoBox: to[0] not set"); // To avoid a bad UI from burning funds
 
