@@ -669,7 +669,7 @@ interface IBentoBoxV1 {
     function withdraw(IERC20 token_, address from, address to, uint256 amount, uint256 share) external returns (uint256 amountOut, uint256 shareOut);
 }
 
-// File contracts/MagicInternetMoney.sol
+// File contracts/NereusStableCoin.sol
 // License-Identifier: MIT
 
 // Magic Internet Money
