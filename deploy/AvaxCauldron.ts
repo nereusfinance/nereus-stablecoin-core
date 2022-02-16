@@ -8,7 +8,7 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const { deployments } = hre;
 
   const degenBox = (await deployments.get("DegenBox")).address;
-  const cauldron = (await deployments.get("CauldronV2MultiChain")).address;
+  const cauldron = (await deployments.get("CauldronV2")).address;
 
   const BentoBox = await ethers.getContractAt<BentoBoxV1>("BentoBoxV1", degenBox);
   const CauldronV2MasterContract = cauldron; // CauldronV2
@@ -57,4 +57,4 @@ if (network.name !== "hardhat" || process.env.HARDHAT_LOCAL_NODE) {
 }
 
 deployFunction.tags = ["AvaxCauldron"];
-deployFunction.dependencies = ["CauldronV2MultiChain"];
+deployFunction.dependencies = ["CauldronV2"];
