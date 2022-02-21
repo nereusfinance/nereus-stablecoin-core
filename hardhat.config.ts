@@ -5,14 +5,14 @@ import "@nomiclabs/hardhat-solhint";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
 import "@typechain/hardhat";
-import "@tenderly/hardhat-tenderly"
+import "@tenderly/hardhat-tenderly";
 import "hardhat-abi-exporter";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-deploy";
 import "./tasks";
 
-import {HardhatUserConfig} from "hardhat/config";
+import { HardhatUserConfig } from "hardhat/config";
 
 const accounts = {
   mnemonic: process.env.MNEMONIC || "test test test test test test test test test test test junk",
@@ -37,7 +37,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       avalanche: process.env.SNOWTRACE_TOKEN,
-    }
+    },
   },
   gasReporter: {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
@@ -68,6 +68,10 @@ const config: HardhatUserConfig = {
       chainId: 1337,
       // Seems to be a bug with this, even when false it complains about being unauthenticated.
       // Reported to HardHat team and fix is incoming
+      mining: {
+        auto: false,
+        interval: 1000,
+      },
       forking: {
         enabled: process.env.FORKING === "true",
         url: "https://api.avax.network/ext/bc/C/rpc",
@@ -94,8 +98,8 @@ const config: HardhatUserConfig = {
     bail: true,
   },
   tenderly: {
-    project: process.env.TENDERLY_PROJECT || 'project',
-    username: process.env.TENDERLY_USERNAME || '',
+    project: process.env.TENDERLY_PROJECT || "project",
+    username: process.env.TENDERLY_USERNAME || "",
   },
   solidity: {
     compilers: [
