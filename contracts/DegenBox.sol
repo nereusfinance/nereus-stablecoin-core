@@ -417,6 +417,7 @@ interface IMasterContract {
 
 contract BoringFactory {
     event LogDeploy(address indexed masterContract, bytes data, address indexed cloneAddress);
+    address[] deployedContractsArray;
 
     /// @notice Mapping from clone contracts to their masterContract.
     mapping(address => address) public masterContractOf;
@@ -462,6 +463,10 @@ contract BoringFactory {
         IMasterContract(cloneAddress).init{value: msg.value}(data);
 
         emit LogDeploy(masterContract, data, cloneAddress);
+        deployedContractsArray.push(cloneAddress);
+    }
+    function deployedContractsList() public pure returns (address[]) {
+        return deployedContractsArray;
     }
 }
 
