@@ -421,6 +421,9 @@ contract BoringFactory {
     /// @notice Mapping from clone contracts to their masterContract.
     mapping(address => address) public masterContractOf;
 
+    /// @notice List of deployed pools.
+    address[] public pools;
+
     /// @notice Deploys a given master Contract as a clone.
     /// Any ETH transferred with this call is forwarded to the new clone.
     /// Emits `LogDeploy`.
@@ -458,11 +461,18 @@ contract BoringFactory {
             }
         }
         masterContractOf[cloneAddress] = masterContract;
+        pools.push(cloneAddress);
 
         IMasterContract(cloneAddress).init{value: msg.value}(data);
 
         emit LogDeploy(masterContract, data, cloneAddress);
     }
+
+    /// @notice Returns all deployed pools.
+    /// @return Addresses of deployed pools.
+    function getAllPools() public pure returns (address[]) {
+         return pools;
+     }
 }
 
 // File contracts/MasterContractManager.sol
