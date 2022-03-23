@@ -92,6 +92,14 @@ const config: HardhatUserConfig = {
       saveDeployments: true,
       tags: ["prod"],
     },
+    fuji: {
+      chainId: 43113,
+      url: "https://api.avax-test.network/ext/bc/C/rpc",
+      accounts,
+      live: true,
+      saveDeployments: false,
+      tags: ["prod"],
+    },
   },
   mocha: {
     timeout: 40000,
