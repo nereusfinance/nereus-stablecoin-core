@@ -470,7 +470,7 @@ contract BoringFactory {
 
     /// @notice Returns all deployed pools.
     /// @return Addresses of deployed pools.
-    function getAllPools() public pure returns (address[]) {
+    function getAllPools() public view returns (address[] memory) {
          return pools;
      }
 }
