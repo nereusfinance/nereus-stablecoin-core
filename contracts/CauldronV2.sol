@@ -27,6 +27,7 @@ import "@boringcrypto/boring-solidity/contracts/libraries/BoringRebase.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 import "@sushiswap/bentobox-sdk/contracts/IBentoBoxV1.sol";
 import "./NereusStableCoin.sol";
+import "./PermissionManager.sol";
 import "./interfaces/IOracle.sol";
 import "./interfaces/ISwapper.sol";
 
@@ -55,6 +56,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     IBentoBoxV1 public immutable bentoBox;
     CauldronV2 public immutable masterContract;
     IERC20 public immutable nereusStableCoin;
+    PermissionManager public immutable liquidatorManager;
 
     // MasterContract variables
     address public feeTo;
@@ -101,10 +103,11 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     uint256 private constant DISTRIBUTION_PRECISION = 100;
 
     /// @notice The constructor is only used for the initial master contract. Subsequent clones are initialised via `init`.
-    constructor(IBentoBoxV1 bentoBox_, IERC20 nereusStableCoin_) public {
+    constructor(IBentoBoxV1 bentoBox_, IERC20 nereusStableCoin_, PermissionManager liquidatorManager_) public {
         bentoBox = bentoBox_;
         nereusStableCoin = nereusStableCoin_;
         masterContract = this;
+        liquidatorManager = liquidatorManager_;
     }
 
     /// @notice Serves as the constructor for clones, as clones can't have a regular constructor
@@ -462,6 +465,8 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         address to,
         ISwapper swapper
     ) public {
+        (, bool isAllowed) = liquidatorManager.info(msg.sender);
+        require(isAllowed, "sender is not approved as liquidator");
         // Oracle can fail but we still need to allow liquidations
         (, uint256 _exchangeRate) = updateExchangeRate();
         accrue();
