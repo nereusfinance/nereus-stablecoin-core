@@ -8,6 +8,7 @@ contract PermissionManager is BoringOwnable {
         uint index;
         bool isAllowed;
     }
+
     mapping(address => PermissionInfo) public info;
     address[] public allowedAccounts;
 
@@ -34,7 +35,7 @@ contract PermissionManager is BoringOwnable {
         allowedAccounts.pop();
     }
 
-    function getAllAccounts() public returns (address[] memory) {
+    function getAllAccounts() public view returns (address[] memory) {
         return allowedAccounts;
     }
 

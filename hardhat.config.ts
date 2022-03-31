@@ -36,7 +36,7 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      avalanche: process.env.SNOWTRACE_TOKEN,
+      avalancheFujiTestnet: process.env.SNOWTRACE_TOKEN,
     },
   },
   gasReporter: {
@@ -90,6 +90,14 @@ const config: HardhatUserConfig = {
       accounts,
       live: true,
       saveDeployments: true,
+      tags: ["prod"],
+    },
+    fuji: {
+      chainId: 43113,
+      url: "https://api.avax-test.network/ext/bc/C/rpc",
+      accounts,
+      live: true,
+      saveDeployments: false,
       tags: ["prod"],
     },
   },

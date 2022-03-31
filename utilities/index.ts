@@ -43,6 +43,7 @@ export enum ChainId {
   Fantom = 250,
   Arbitrum = 42161,
   Avalanche = 43114,
+  Fuji = 43113,
   Boba = 288
 }
 

@@ -259,7 +259,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     /// @notice Sender borrows `amount` and transfers it to `to`.
     /// @return part Total part of the debt held by borrowers.
     /// @return share Total amount in shares borrowed.
-    function borrow(address to, uint256 amount) public solvent returns (uint256 part, uint256 share) {
+    function borrow(address to, uint256 amount) public solvent virtual returns (uint256 part, uint256 share) {
         accrue();
         (part, share) = _borrow(to, amount);
     }
@@ -288,7 +288,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         address to,
         bool skim,
         uint256 part
-    ) public returns (uint256 amount) {
+    ) public virtual returns (uint256 amount) {
         accrue();
         amount = _repay(to, skim, part);
     }
@@ -333,7 +333,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         uint256 value,
         uint256 value1,
         uint256 value2
-    ) internal returns (uint256, uint256) {
+    ) internal virtual returns (uint256, uint256) {
         (IERC20 token, address to, int256 amount, int256 share) = abi.decode(data, (IERC20, address, int256, int256));
         amount = int256(_num(amount, value1, value2)); // Done this way to avoid stack too deep errors
         share = int256(_num(share, value1, value2));
@@ -345,7 +345,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         bytes memory data,
         uint256 value1,
         uint256 value2
-    ) internal returns (uint256, uint256) {
+    ) internal virtual returns (uint256, uint256) {
         (IERC20 token, address to, int256 amount, int256 share) = abi.decode(data, (IERC20, address, int256, int256));
         return bentoBox.withdraw(token, msg.sender, to, _num(amount, value1, value2), _num(share, value1, value2));
     }
