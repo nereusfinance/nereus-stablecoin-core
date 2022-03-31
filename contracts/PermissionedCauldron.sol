@@ -38,8 +38,7 @@ contract PermissionedCauldron is CauldronV2 {
             (, bool isWhitelisted) = whitelistManager.info(msg.sender);
             require(isWhitelisted, "sender is not in whitelist");
         }
-        accrue();
-        (part, share) = _borrow(to, amount);
+        super.borrow(to, amount);
     }
 
     /// @notice Repays a loan.
@@ -57,8 +56,7 @@ contract PermissionedCauldron is CauldronV2 {
             (, bool isWhitelisted) = whitelistManager.info(msg.sender);
             require(isWhitelisted, "sender is not in whitelist");
         }
-        accrue();
-        amount = _repay(to, skim, part);
+        super.repay(to, skim, part);
     }
 
 
