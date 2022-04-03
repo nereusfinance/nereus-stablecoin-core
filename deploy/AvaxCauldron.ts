@@ -58,3 +58,4 @@ if (network.name !== "hardhat" || process.env.HARDHAT_LOCAL_NODE) {
 
 deployFunction.tags = ["AvaxCauldron"];
 deployFunction.dependencies = ["CauldronV2"];
+

@@ -119,7 +119,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     }
 
     /// @notice Accrues the interest on the borrowed tokens and handles the accumulation of fees.
-    function accrue() public {
+    function accrue() public virtual {
         AccrueInfo memory _accrueInfo = accrueInfo;
         // Number of seconds since accrue was called
         uint256 elapsedTime = block.timestamp - _accrueInfo.lastAccrued;
@@ -176,7 +176,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     /// This function is supposed to be invoked if needed because Oracle queries can be expensive.
     /// @return updated True if `exchangeRate` was updated.
     /// @return rate The new exchange rate.
-    function updateExchangeRate() public returns (bool updated, uint256 rate) {
+    function updateExchangeRate() public virtual returns (bool updated, uint256 rate) {
         (updated, rate) = oracle.get(oracleData);
 
         if (updated) {
@@ -217,7 +217,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         address to,
         bool skim,
         uint256 share
-    ) public {
+    ) public virtual {
         userCollateralShare[to] = userCollateralShare[to].add(share);
         uint256 oldTotalCollateralShare = totalCollateralShare;
         totalCollateralShare = oldTotalCollateralShare.add(share);
@@ -236,7 +236,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     /// @notice Removes `share` amount of collateral and transfers it to `to`.
     /// @param to The receiver of the shares.
     /// @param share Amount of shares to remove.
-    function removeCollateral(address to, uint256 share) public solvent {
+    function removeCollateral(address to, uint256 share) public virtual solvent {
         // accrue must be called because we check solvency
         accrue();
         _removeCollateral(to, share);
@@ -333,7 +333,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         uint256 value,
         uint256 value1,
         uint256 value2
-    ) internal virtual returns (uint256, uint256) {
+    ) internal returns (uint256, uint256) {
         (IERC20 token, address to, int256 amount, int256 share) = abi.decode(data, (IERC20, address, int256, int256));
         amount = int256(_num(amount, value1, value2)); // Done this way to avoid stack too deep errors
         share = int256(_num(share, value1, value2));
@@ -345,7 +345,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         bytes memory data,
         uint256 value1,
         uint256 value2
-    ) internal virtual returns (uint256, uint256) {
+    ) internal returns (uint256, uint256) {
         (IERC20 token, address to, int256 amount, int256 share) = abi.decode(data, (IERC20, address, int256, int256));
         return bentoBox.withdraw(token, msg.sender, to, _num(amount, value1, value2), _num(share, value1, value2));
     }
@@ -393,7 +393,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         uint8[] calldata actions,
         uint256[] calldata values,
         bytes[] calldata datas
-    ) external payable returns (uint256 value1, uint256 value2) {
+    ) public virtual payable returns (uint256 value1, uint256 value2) {
         CookStatus memory status;
         for (uint256 i = 0; i < actions.length; i++) {
             uint8 action = actions[i];
@@ -530,7 +530,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     }
 
     /// @notice Withdraws the fees accumulated.
-    function withdrawFees() public {
+    function withdrawFees() public virtual {
         accrue();
         address _feeTo = masterContract.feeTo();
         uint256 _feesEarned = accrueInfo.feesEarned;
@@ -544,14 +544,14 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     /// @notice Sets the beneficiary of interest accrued.
     /// MasterContract Only Admin function.
     /// @param newFeeTo The address of the receiver.
-    function setFeeTo(address newFeeTo) public onlyOwner {
+    function setFeeTo(address newFeeTo) public virtual onlyOwner {
         feeTo = newFeeTo;
         emit LogFeeTo(newFeeTo);
     }
 
     /// @notice reduces the supply of NUSD
     /// @param amount amount to reduce supply by
-    function reduceSupply(uint256 amount) public {
+    function reduceSupply(uint256 amount) public virtual {
         require(msg.sender == masterContract.owner(), "Caller is not the owner");
         bentoBox.withdraw(nereusStableCoin, address(this), address(this), amount, 0);
         NereusStableCoin(address(nereusStableCoin)).burn(amount);

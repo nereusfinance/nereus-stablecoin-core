@@ -10,6 +10,10 @@ const ParametersPerChain = {
     wavax: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
     owner: LothricFin,
   },
+  [ChainId.Fuji]: {
+    wavax: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
+    owner: LothricFin,
+  },
 };
 
 const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
@@ -22,10 +26,11 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
 
   const nusd = (await deployments.get("NereusStableCoin")).address;
   const degenBox = (await deployments.get("DegenBox")).address;
+  const permissonManager = (await deployments.get("PerimissionManager")).address;
 
   const tx = await deploy("CauldronV2", {
     from: deployer,
-    args: [degenBox, nusd],
+    args: [degenBox, nusd, permissonManager],
     log: true,
     deterministicDeployment: false,
   });
