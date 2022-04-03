@@ -60,3 +60,4 @@ setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
 deployFunction.tags = ["AvaxCauldron"];
 deployFunction.dependencies = ["CauldronV2"];
+

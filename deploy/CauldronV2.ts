@@ -26,10 +26,11 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
 
   const nusd = (await deployments.get("NereusStableCoin")).address;
   const degenBox = (await deployments.get("DegenBox")).address;
+  const permissonManager = (await deployments.get("PerimissionManager")).address;
 
   const tx = await deploy("CauldronV2", {
     from: deployer,
-    args: [degenBox, nusd],
+    args: [degenBox, nusd, permissonManager],
     log: true,
     deterministicDeployment: false,
   });
