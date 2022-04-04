@@ -21,14 +21,14 @@ import "./CauldronV2.sol";
 /// from arbitrary callers thus, don't trust calls from this contract in any circumstances.
 contract PermissionedCauldron is CauldronV2 {
 
-    function setManagerAddress(address contract_address) public onlyOwner returns (address){
-        address manager_address = contract_address;
-        return manager_address;
-    }
-    WhitelistManager whitelistManager = WhitelistManager(setManagerAddress(0x9eB1307133996D4b5b264EAcd4d70F964D7F6a0F));
+    WhitelistManager public whitelistManager;
 
     /// @notice The constructor is only used for the initial master contract. Subsequent clones are initialised via `init`.
     constructor(IBentoBoxV1 bentoBox_, IERC20 nereusStableCoin_, PermissionManager permissionManager) CauldronV2(bentoBox_, nereusStableCoin_, permissionManager) public {
+    }
+
+    function setManager(address managerAddress) public onlyOwner {
+        whitelistManager = WhitelistManager(managerAddress);
     }
 
     /// @notice Sender borrows `amount` and transfers it to `to`.
