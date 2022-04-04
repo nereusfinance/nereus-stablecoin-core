@@ -3,7 +3,7 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { ethers, network } from "hardhat";
 import { ChainId, setDeploymentSupportedChains } from "../utilities";
 import { LothricFin } from "../test/constants";
-import { CauldronV2 } from "../typechain";
+import { PermissionedCauldron } from "../typechain";
 
 const ParametersPerChain = {
   [ChainId.Localhost]: {
@@ -24,23 +24,27 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const chainId = await hre.getChainId();
   const parameters = ParametersPerChain[parseInt(chainId)];
 
-  const nusd = (await deployments.get("NereusStableCoin")).address;
-  const degenBox = (await deployments.get("DegenBox")).address;
+  const degenBox = "0x3c4479f3274113dd44F770632cC89F4AdDf33617";
+  const nxusd = "0x08Ccc70e9D460e8EbD9D384e261CDEDAe68F1E41";
+  const permissionManager = "0xBd0c5318a49232E660fB336de4aB393093eb5a5f";
+  const whitelistManager = "0x789348B5A0c24EAe846D2691e93ff41BC28AFe4b";
 
-  const tx = await deploy("CauldronV2", {
+  console.log("deployer", deployer);
+
+  const tx = await deploy("PermissionedCauldron", {
     from: deployer,
-    args: [degenBox, nusd],
+    args: [degenBox, nxusd, permissionManager, whitelistManager],
     log: true,
     deterministicDeployment: false,
   });
 
-  const CauldronV2 = await ethers.getContract<CauldronV2>("CauldronV2");
+  const PermissionedCauldron = await ethers.getContract<PermissionedCauldron>("PermissionedCauldron");
 
-  if ((await CauldronV2.owner()) != parameters.owner && network.name !== "hardhat") {
-    await CauldronV2.transferOwnership(parameters.owner, true, false);
+  if ((await PermissionedCauldron.owner()) != parameters.owner && network.name !== "hardhat") {
+    await PermissionedCauldron.transferOwnership(parameters.owner, true, false);
   }
 
-  await deployments.save("CauldronV2", {
+  await deployments.save("PermissionedCauldron", {
     abi: [],
     address: tx.address,
   });
@@ -50,5 +54,5 @@ export default deployFunction;
 
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
-deployFunction.tags = ["CauldronV2"];
-deployFunction.dependencies = ["DegenBox"];
+deployFunction.tags = ["PermissionedCauldron"];
+deployFunction.dependencies = [];

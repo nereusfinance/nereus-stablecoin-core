@@ -1,16 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
-import "@boringcrypto/boring-solidity/contracts/libraries/BoringMath.sol";
-import "@boringcrypto/boring-solidity/contracts/BoringOwnable.sol";
-import "@boringcrypto/boring-solidity/contracts/ERC20.sol";
-import "@boringcrypto/boring-solidity/contracts/interfaces/IMasterContract.sol";
-import "@boringcrypto/boring-solidity/contracts/libraries/BoringRebase.sol";
-import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 import "@sushiswap/bentobox-sdk/contracts/IBentoBoxV1.sol";
-import "./NereusStableCoin.sol";
-import "./interfaces/IOracle.sol";
-import "./interfaces/ISwapper.sol";
 import "./WhitelistManager.sol";
 import "./PermissionManager.sol";
 import "./CauldronV2.sol";
@@ -21,14 +12,11 @@ import "./CauldronV2.sol";
 /// from arbitrary callers thus, don't trust calls from this contract in any circumstances.
 contract PermissionedCauldron is CauldronV2 {
 
-    WhitelistManager public whitelistManager;
+    WhitelistManager public immutable whitelistManager;
 
     /// @notice The constructor is only used for the initial master contract. Subsequent clones are initialised via `init`.
-    constructor(IBentoBoxV1 bentoBox_, IERC20 nereusStableCoin_, PermissionManager permissionManager) CauldronV2(bentoBox_, nereusStableCoin_, permissionManager) public {
-    }
-
-    function setManager(address managerAddress) public onlyOwner {
-        whitelistManager = WhitelistManager(managerAddress);
+    constructor(IBentoBoxV1 bentoBox_, IERC20 nxusd_, PermissionManager permissionManager, WhitelistManager whitelistManager_) CauldronV2(bentoBox_, nxusd_, permissionManager) public {
+      whitelistManager = whitelistManager_;
     }
 
     /// @notice Sender borrows `amount` and transfers it to `to`.
