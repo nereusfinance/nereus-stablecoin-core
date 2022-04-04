@@ -3,10 +3,10 @@ const hre = require("hardhat");
 async function main() {
   const [owner] = await hre.ethers.getSigners();
 
-  // You have to use your addresses of the deployed smart contracts here
-  const avaxCauldron = "0x3581559DaA31DD3113E9dd338323Fca6c1215EFF";
-  const degenBox = "0x4cA5dD575DacE76781C41cafe68281dfc4dF0038";
-  const nusd = "0x83A90d53dbc9a55888333224ca6C8210A3a7bDef";
+  // You have to use your addresses of the deployed smart contracts in the necessary network here
+  const avaxCauldron = "0xb2385F0eE59644BaC1FaC9945EE8B227aE7f995c"; //Avalanche Fuji deployed address
+  const degenBox = "0xA0c72b19b0C22Ec026a0958F2BfF6f6b3beb1268"; //Avalanche Fuji deployed address
+  const nusd = "0x58743aC84ea96d8091a51D00202B7eC02B78bEa5"; //Avalanche Fuji deployed address
 
   const nusdContract = (
     await hre.ethers.getContractAt("NereusStableCoin", nusd)

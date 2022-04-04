@@ -12,7 +12,10 @@ interface IAggregator {
 contract AVAXOracle is IOracle {
     using BoringMath for uint256; // Keep everything in uint256
 
-    IAggregator public constant avaxOracle = IAggregator(0x0A77230d17318075983913bC2145DB16C7366156);
+
+    // Chainlink Data Feeds Avalanche Mainnet AVAX/USD 0x0A77230d17318075983913bC2145DB16C7366156
+    // Chainlink Data Feeds Avalanche Fuji AVAX/USD 0x5498BB86BC934c8D34FDA08E81D444153d0D06aD
+    IAggregator public constant avaxOracle = IAggregator(0x5498BB86BC934c8D34FDA08E81D444153d0D06aD);
 
     // Calculates the lastest exchange rate
     // Uses both divide and multiply only for tokens not supported directly by Chainlink, for example MKR/USD
