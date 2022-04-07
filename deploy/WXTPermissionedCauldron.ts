@@ -20,19 +20,19 @@ const ParametersPerChain = {
 const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments } = hre;
 
-  const BentoBox = await ethers.getContractAt<BentoBoxV1>("BentoBoxV1", "0x3c4479f3274113dd44F770632cC89F4AdDf33617");
-  const PermissionedCauldronMasterContract = "0x5B26FEc5eC24d4C052C6710724E16d2f87059c85"; // PermissionedCauldron
-  const collateral = "0x14f7313b49452a13515F99FE9891b466ECA039bf"; // WXT Avalanche Fuji
-  const oracleProxy = await ethers.getContractAt<WXTOracle>("WXTOracle", "0xFa00C87719F0E11Fa4F292Cd7a38102824E42F91"); // PriceOracle Avalanche Fuji
+  const BentoBox = await ethers.getContractAt<BentoBoxV1>("BentoBoxV1", "0x4cA5dD575DacE76781C41cafe68281dfc4dF0038");
+  const PermissionedCauldronMasterContract = "0xd2276a18E7bF769B5C2079e4A94C929a68a2D676"; // PermissionedCauldron
+  const collateral = "0xfcDe4A87b8b6FA58326BB462882f1778158B02F1"; // WXT Avalanche
+  const oracleProxy = await ethers.getContractAt<WXTOracle>("WXTOracle", "0x662e896e36e57606B0334708B366212c6fe0CAB6"); // PriceOracle Avalanche Fuji
   const oracleData = "0x0000000000000000000000000000000000000000";
 
   const INTEREST_CONVERSION = 1e18 / (365.25 * 3600 * 24) / 100;
   const OPENING_CONVERSION = 1e5 / 100;
 
-  const collateralization = 75 * 1e3; // 75% LTV
+  const collateralization = 80 * 1e3; // 80% LTV
   const opening = 0.5 * OPENING_CONVERSION; // .5% initial
-  const interest = parseInt(String(0 * INTEREST_CONVERSION)); // 1% Interest
-  const liquidation = 12.5 * 1e3 + 1e5;
+  const interest = parseInt(String(0 * INTEREST_CONVERSION)); // 0% Interest
+  const liquidation = 10 * 1e3 + 1e5;
 
   let initData = ethers.utils.defaultAbiCoder.encode(
     ["address", "address", "bytes", "uint64", "uint256", "uint256", "uint256"],

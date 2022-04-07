@@ -82,7 +82,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     uint256 public BORROW_OPENING_FEE;
     uint256 private constant BORROW_OPENING_FEE_PRECISION = 1e5;
 
-    uint256 private constant DISTRIBUTION_PART = 10;
+    uint256 private constant DISTRIBUTION_PART = 0;
     uint256 private constant DISTRIBUTION_PRECISION = 100;
 
     /// @notice The constructor is only used for the initial master contract. Subsequent clones are initialised via `init`.

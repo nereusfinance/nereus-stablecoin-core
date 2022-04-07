@@ -4,7 +4,7 @@ pragma experimental ABIEncoderV2;
 import "./PermissionManager.sol";
 
 contract WhitelistManager is PermissionManager {
-    bool private statusEnable;
+    bool private statusEnable = true;
 
     function setCheckStatus(bool status) public onlyOwner {
         statusEnable = status;

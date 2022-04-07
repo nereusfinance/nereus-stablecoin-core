@@ -109,7 +109,7 @@ contract PermissionedCauldron is CauldronV2 {
             (, bool isEnable) = whitelistManager.info(msg.sender);
             require(isEnable, "sender is not in whitelist");
         }
-        setFeeTo(newFeeTo);
+        super.setFeeTo(newFeeTo);
     }
 
     /// @notice reduces the supply of NUSD

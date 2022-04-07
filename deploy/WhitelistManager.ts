@@ -5,6 +5,10 @@ import { LothricFin } from "../test/constants";
 import { WhitelistManager } from "../typechain";
 
 const ParametersPerChain = {
+  [ChainId.Avalanche]: {
+    wavax: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
+    owner: LothricFin,
+  },
   [ChainId.Localhost]: {
     wavax: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
     owner: LothricFin,

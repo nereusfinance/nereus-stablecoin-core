@@ -4,9 +4,9 @@ async function main() {
   const [owner] = await hre.ethers.getSigners();
 
   // You have to use your addresses of the deployed smart contracts in the necessary network here
-  const avaxCauldron = "0xD72B033604ee6CBfB6C50eE9178C2Ba5f7D25B8a"; //Avalanche Fuji deployed address
-  const degenBox = "0x3c4479f3274113dd44F770632cC89F4AdDf33617"; //Avalanche Fuji deployed address
-  const nusd = "0x08Ccc70e9D460e8EbD9D384e261CDEDAe68F1E41"; //Avalanche Fuji deployed address
+  const avaxCauldron = "0x3909683B2e3A3c56ba7Ec984F54aFCbD90aBCE95"; //Avalanche Fuji deployed address
+  const degenBox = "0x57c5e7E753239f5260FE7C376De4f5813C61Ceb1"; //Avalanche Fuji deployed address
+  const nusd = "0xf3630877aA6d47646112D006369C3ba538cC1b8A"; //Avalanche Fuji deployed address
 
   const nusdContract = (await hre.ethers.getContractAt("NXUSD", nusd)).connect(
     owner

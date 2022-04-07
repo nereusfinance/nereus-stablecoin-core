@@ -26,7 +26,7 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const BentoBox = await ethers.getContractAt<BentoBoxV1>("BentoBoxV1", degenBox);
   const CauldronV2MasterContract = cauldron; // CauldronV2
   const collateral = "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3"; // WAVAX Avalanche Fuji
-  const oracleProxy = await ethers.getContractAt<AVAXOracle>("AVAXOracle", "0x5401bF7981fCBc6999469f3aB0591DfDb2dA2907"); // PriceOracle Avalanche Fuji
+  const oracleProxy = await ethers.getContractAt<AVAXOracle>("AVAXOracle", "0xD18768FE7AD20E0DF5439958DB9Aa7b85E337a9D"); // PriceOracle Avalanche Fuji
   const oracleData =
     "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000000";
 
@@ -59,5 +59,4 @@ export default deployFunction;
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
 deployFunction.tags = ["AvaxCauldron"];
-deployFunction.dependencies = ["CauldronV2"];
-
+deployFunction.dependencies = [];
