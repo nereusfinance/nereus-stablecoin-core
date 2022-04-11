@@ -3,7 +3,7 @@ import { DeployFunction } from "hardhat-deploy/types";
 import { ethers, network } from "hardhat";
 import { ChainId, setDeploymentSupportedChains } from "../utilities";
 import { LothricFin } from "../test/constants";
-import { DegenBox } from "../typechain";
+import { PermissionedCauldron } from "../typechain";
 
 const ParametersPerChain = {
   [ChainId.Avalanche]: {
@@ -28,20 +28,25 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const chainId = await hre.getChainId();
   const parameters = ParametersPerChain[parseInt(chainId)];
 
-  const tx = await deploy("DegenBox", {
+  const degenBox = "0x0B1F9C2211F77Ec3Fa2719671c5646cf6e59B775";
+  const nxusd = "0xF14f4CE569cB3679E99d5059909E23B07bd2F387";
+  const permissionManager = "0x9934248Bb601b7C0E1B2e1E71571C1Ef71D09c89";
+  const whitelistManager = "0x662e896e36e57606B0334708B366212c6fe0CAB6";
+
+  const tx = await deploy("PermissionedCauldron", {
     from: deployer,
-    args: [parameters.wavax],
+    args: [degenBox, nxusd, permissionManager, whitelistManager],
     log: true,
     deterministicDeployment: false,
   });
 
-  const DegenBox = await ethers.getContract<DegenBox>("DegenBox");
+  const PermissionedCauldron = await ethers.getContract<PermissionedCauldron>("PermissionedCauldron");
 
-  if ((await DegenBox.owner()) != parameters.owner && network.name !== "hardhat") {
-    await DegenBox.transferOwnership(parameters.owner, true, false);
+  if ((await PermissionedCauldron.owner()) != parameters.owner && network.name !== "hardhat") {
+    await PermissionedCauldron.transferOwnership(parameters.owner, true, false);
   }
 
-  await deployments.save("DegenBox", {
+  await deployments.save("PermissionedCauldron", {
     abi: [],
     address: tx.address,
   });
@@ -51,5 +56,5 @@ export default deployFunction;
 
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
-deployFunction.tags = ["DegenBox"];
+deployFunction.tags = ["PermissionedCauldron"];
 deployFunction.dependencies = [];

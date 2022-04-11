@@ -1,9 +1,8 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { ethers, network } from "hardhat";
 import { ChainId, setDeploymentSupportedChains } from "../utilities";
 import { LothricFin } from "../test/constants";
-import { DegenBox } from "../typechain";
+import { NXUSD } from "../typechain";
 
 const ParametersPerChain = {
   [ChainId.Avalanche]: {
@@ -25,23 +24,15 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const { deploy } = deployments;
 
   const { deployer } = await getNamedAccounts();
-  const chainId = await hre.getChainId();
-  const parameters = ParametersPerChain[parseInt(chainId)];
 
-  const tx = await deploy("DegenBox", {
+  const tx = await deploy("NXUSD", {
     from: deployer,
-    args: [parameters.wavax],
+    args: [],
     log: true,
     deterministicDeployment: false,
   });
 
-  const DegenBox = await ethers.getContract<DegenBox>("DegenBox");
-
-  if ((await DegenBox.owner()) != parameters.owner && network.name !== "hardhat") {
-    await DegenBox.transferOwnership(parameters.owner, true, false);
-  }
-
-  await deployments.save("DegenBox", {
+  await deployments.save("NXUSD", {
     abi: [],
     address: tx.address,
   });
@@ -51,5 +42,5 @@ export default deployFunction;
 
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
-deployFunction.tags = ["DegenBox"];
+deployFunction.tags = ["NXUSD"];
 deployFunction.dependencies = [];

@@ -1,22 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
 
-// Cauldron
-
-//    (                (   (
-//    )\      )    (   )\  )\ )  (
-//  (((_)  ( /(   ))\ ((_)(()/(  )(    (    (
-//  )\___  )(_)) /((_) _   ((_))(()\   )\   )\ )
-// ((/ __|((_)_ (_))( | |  _| |  ((_) ((_) _(_/(
-//  | (__ / _` || || || |/ _` | | '_|/ _ \| ' \))
-//   \___|\__,_| \_,_||_|\__,_| |_|  \___/|_||_|
-
-// Copyright (c) 2021 BoringCrypto - All rights reserved
-// Twitter: @Boring_Crypto
-
-// Special thanks to:
-// @0xKeno - for all his invaluable contributions
-// @burger_crypto - for the idea of trying to let the LPs benefit from liquidations
-
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringMath.sol";
@@ -26,7 +9,7 @@ import "@boringcrypto/boring-solidity/contracts/interfaces/IMasterContract.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringRebase.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 import "@sushiswap/bentobox-sdk/contracts/IBentoBoxV1.sol";
-import "./NereusStableCoin.sol";
+import "./NXUSD.sol";
 import "./PermissionManager.sol";
 import "./interfaces/IOracle.sol";
 import "./interfaces/ISwapper.sol";
@@ -55,7 +38,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     // Immutables (for MasterContract and all clones)
     IBentoBoxV1 public immutable bentoBox;
     CauldronV2 public immutable masterContract;
-    IERC20 public immutable nereusStableCoin;
+    IERC20 public immutable nxusd;
     PermissionManager public immutable liquidatorManager;
 
     // MasterContract variables
@@ -99,13 +82,13 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     uint256 public BORROW_OPENING_FEE;
     uint256 private constant BORROW_OPENING_FEE_PRECISION = 1e5;
 
-    uint256 private constant DISTRIBUTION_PART = 10;
+    uint256 private constant DISTRIBUTION_PART = 0;
     uint256 private constant DISTRIBUTION_PRECISION = 100;
 
     /// @notice The constructor is only used for the initial master contract. Subsequent clones are initialised via `init`.
-    constructor(IBentoBoxV1 bentoBox_, IERC20 nereusStableCoin_, PermissionManager liquidatorManager_) public {
+    constructor(IBentoBoxV1 bentoBox_, IERC20 nxusd_, PermissionManager liquidatorManager_) public {
         bentoBox = bentoBox_;
-        nereusStableCoin = nereusStableCoin_;
+        nxusd = nxusd_;
         masterContract = this;
         liquidatorManager = liquidatorManager_;
     }
@@ -119,7 +102,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     }
 
     /// @notice Accrues the interest on the borrowed tokens and handles the accumulation of fees.
-    function accrue() public {
+    function accrue() public virtual {
         AccrueInfo memory _accrueInfo = accrueInfo;
         // Number of seconds since accrue was called
         uint256 elapsedTime = block.timestamp - _accrueInfo.lastAccrued;
@@ -176,7 +159,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     /// This function is supposed to be invoked if needed because Oracle queries can be expensive.
     /// @return updated True if `exchangeRate` was updated.
     /// @return rate The new exchange rate.
-    function updateExchangeRate() public returns (bool updated, uint256 rate) {
+    function updateExchangeRate() public virtual returns (bool updated, uint256 rate) {
         (updated, rate) = oracle.get(oracleData);
 
         if (updated) {
@@ -217,7 +200,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         address to,
         bool skim,
         uint256 share
-    ) public {
+    ) public virtual {
         userCollateralShare[to] = userCollateralShare[to].add(share);
         uint256 oldTotalCollateralShare = totalCollateralShare;
         totalCollateralShare = oldTotalCollateralShare.add(share);
@@ -236,7 +219,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     /// @notice Removes `share` amount of collateral and transfers it to `to`.
     /// @param to The receiver of the shares.
     /// @param share Amount of shares to remove.
-    function removeCollateral(address to, uint256 share) public solvent {
+    function removeCollateral(address to, uint256 share) public virtual solvent {
         // accrue must be called because we check solvency
         accrue();
         _removeCollateral(to, share);
@@ -250,8 +233,8 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         userBorrowPart[msg.sender] = userBorrowPart[msg.sender].add(part);
 
         // As long as there are tokens on this contract you can 'mint'... this enables limiting borrows
-        share = bentoBox.toShare(nereusStableCoin, amount, false);
-        bentoBox.transfer(nereusStableCoin, address(this), to, share);
+        share = bentoBox.toShare(nxusd, amount, false);
+        bentoBox.transfer(nxusd, address(this), to, share);
 
         emit LogBorrow(msg.sender, to, amount.add(feeAmount), part);
     }
@@ -259,7 +242,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     /// @notice Sender borrows `amount` and transfers it to `to`.
     /// @return part Total part of the debt held by borrowers.
     /// @return share Total amount in shares borrowed.
-    function borrow(address to, uint256 amount) public solvent returns (uint256 part, uint256 share) {
+    function borrow(address to, uint256 amount) public solvent virtual returns (uint256 part, uint256 share) {
         accrue();
         (part, share) = _borrow(to, amount);
     }
@@ -273,8 +256,8 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         (totalBorrow, amount) = totalBorrow.sub(part, true);
         userBorrowPart[to] = userBorrowPart[to].sub(part);
 
-        uint256 share = bentoBox.toShare(nereusStableCoin, amount, true);
-        bentoBox.transfer(nereusStableCoin, skim ? address(bentoBox) : msg.sender, address(this), share);
+        uint256 share = bentoBox.toShare(nxusd, amount, true);
+        bentoBox.transfer(nxusd, skim ? address(bentoBox) : msg.sender, address(this), share);
         emit LogRepay(skim ? address(bentoBox) : msg.sender, to, amount, part);
     }
 
@@ -288,7 +271,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         address to,
         bool skim,
         uint256 part
-    ) public returns (uint256 amount) {
+    ) public virtual returns (uint256 amount) {
         accrue();
         amount = _repay(to, skim, part);
     }
@@ -393,7 +376,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         uint8[] calldata actions,
         uint256[] calldata values,
         bytes[] calldata datas
-    ) external payable returns (uint256 value1, uint256 value2) {
+    ) public virtual payable returns (uint256 value1, uint256 value2) {
         CookStatus memory status;
         for (uint256 i = 0; i < actions.length; i++) {
             uint8 action = actions[i];
@@ -443,7 +426,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
                 }
             } else if (action == ACTION_GET_REPAY_SHARE) {
                 int256 part = abi.decode(datas[i], (int256));
-                value1 = bentoBox.toShare(nereusStableCoin, totalBorrow.toElastic(_num(part, value1, value2), true), true);
+                value1 = bentoBox.toShare(nxusd, totalBorrow.toElastic(_num(part, value1, value2), true), true);
             } else if (action == ACTION_GET_REPAY_PART) {
                 int256 amount = abi.decode(datas[i], (int256));
                 value1 = totalBorrow.toBase(_num(amount, value1, value2), false);
@@ -517,25 +500,25 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
             accrueInfo.feesEarned = accrueInfo.feesEarned.add(distributionAmount.to128());
         }
 
-        uint256 allBorrowShare = bentoBox.toShare(nereusStableCoin, allBorrowAmount, true);
+        uint256 allBorrowShare = bentoBox.toShare(nxusd, allBorrowAmount, true);
 
         // Swap using a swapper freely chosen by the caller
         // Open (flash) liquidation: get proceeds first and provide the borrow after
         bentoBox.transfer(collateral, address(this), to, allCollateralShare);
         if (swapper != ISwapper(0)) {
-            swapper.swap(collateral, nereusStableCoin, msg.sender, allBorrowShare, allCollateralShare);
+            swapper.swap(collateral, nxusd, msg.sender, allBorrowShare, allCollateralShare);
         }
 
-        bentoBox.transfer(nereusStableCoin, msg.sender, address(this), allBorrowShare);
+        bentoBox.transfer(nxusd, msg.sender, address(this), allBorrowShare);
     }
 
     /// @notice Withdraws the fees accumulated.
-    function withdrawFees() public {
+    function withdrawFees() public virtual {
         accrue();
         address _feeTo = masterContract.feeTo();
         uint256 _feesEarned = accrueInfo.feesEarned;
-        uint256 share = bentoBox.toShare(nereusStableCoin, _feesEarned, false);
-        bentoBox.transfer(nereusStableCoin, address(this), _feeTo, share);
+        uint256 share = bentoBox.toShare(nxusd, _feesEarned, false);
+        bentoBox.transfer(nxusd, address(this), _feeTo, share);
         accrueInfo.feesEarned = 0;
 
         emit LogWithdrawFees(_feeTo, _feesEarned);
@@ -544,16 +527,16 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
     /// @notice Sets the beneficiary of interest accrued.
     /// MasterContract Only Admin function.
     /// @param newFeeTo The address of the receiver.
-    function setFeeTo(address newFeeTo) public onlyOwner {
+    function setFeeTo(address newFeeTo) public virtual onlyOwner {
         feeTo = newFeeTo;
         emit LogFeeTo(newFeeTo);
     }
 
     /// @notice reduces the supply of NUSD
     /// @param amount amount to reduce supply by
-    function reduceSupply(uint256 amount) public {
+    function reduceSupply(uint256 amount) public virtual {
         require(msg.sender == masterContract.owner(), "Caller is not the owner");
-        bentoBox.withdraw(nereusStableCoin, address(this), address(this), amount, 0);
-        NereusStableCoin(address(nereusStableCoin)).burn(amount);
+        bentoBox.withdraw(nxusd, address(this), address(this), amount, 0);
+        NXUSD(address(nxusd)).burn(amount);
     }
 }
