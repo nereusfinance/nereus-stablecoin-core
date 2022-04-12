@@ -66,7 +66,7 @@ const config: HardhatUserConfig = {
       tags: ["local"],
     },
     hardhat: {
-      chainId: 1337,
+      chainId: 43114,
       // Seems to be a bug with this, even when false it complains about being unauthenticated.
       // Reported to HardHat team and fix is incoming
       mining: {
