@@ -14,13 +14,13 @@ contract WXTOracle is IOracle {
 
 
 
-    // Avalanche WXT/USDT 0xc22a84ce336b39e2D08324c032a12CBE8bb7e0F1
-    IAggregator public constant wxtOracle = IAggregator(0xc22a84ce336b39e2D08324c032a12CBE8bb7e0F1);
+    // Avalanche WXT/USD 0xc22a84ce336b39e2D08324c032a12CBE8bb7e0F1
+    IAggregator public constant aggregatorProxy = IAggregator(0xc22a84ce336b39e2D08324c032a12CBE8bb7e0F1);
 
     // Calculates the lastest exchange rate
     // Uses both divide and multiply only for tokens not supported directly by Chainlink, for example MKR/USD
     function _get() internal view returns (uint256) {
-        return 1e24 / uint256(wxtOracle.latestAnswer());
+        return 1e24 / uint256(aggregatorProxy.latestAnswer());
     }
 
     // Get the latest exchange rate

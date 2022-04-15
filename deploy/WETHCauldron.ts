@@ -1,42 +1,48 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { ethers } from "hardhat";
-import { BentoBoxV1, AVAXOracle } from "../typechain";
+import { BentoBoxV1, ETHOracle } from "../typechain";
 import { expect } from "chai";
 import { ChainId, setDeploymentSupportedChains } from "../utilities";
 import { LothricFin } from "../test/constants";
 
 const ParametersPerChain = {
   [ChainId.Localhost]: {
-    wavax: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
     owner: LothricFin,
+    degenBox: "",
+    collateral: "",
+    oracle: "",
+    oracleData: "",
+    masterContract: "",
   },
   [ChainId.Fuji]: {
-    wavax: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     owner: LothricFin,
+    degenBox: "0x3c4479f3274113dd44F770632cC89F4AdDf33617",
+    collateral: "0x1efae2c9Db545bE5875303462918be930a23C294",
+    oracle: "0xf534d31BdB86F658925c64446c50f69CF485E6d9",
+    oracleData: "0x0000000000000000000000000000000000000000",
+    masterContract: "0xA5D590c9950df89Bb287d3CB860380C89116288A",
   },
 };
 
 const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments } = hre;
+  const chainId = await hre.getChainId();
+  const parameters = ParametersPerChain[parseInt(chainId)];
 
-  const degenBox = (await deployments.get("DegenBox")).address;
-  const cauldron = (await deployments.get("CauldronV2")).address;
-
-  const BentoBox = await ethers.getContractAt<BentoBoxV1>("BentoBoxV1", degenBox);
-  const CauldronV2MasterContract = cauldron; // CauldronV2
-  const collateral = "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3"; // WAVAX Avalanche Fuji
-  const oracleProxy = await ethers.getContractAt<AVAXOracle>("AVAXOracle", "0xD18768FE7AD20E0DF5439958DB9Aa7b85E337a9D"); // PriceOracle Avalanche Fuji
-  const oracleData =
-    "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000000";
+  const BentoBox = await ethers.getContractAt<BentoBoxV1>("BentoBoxV1", parameters.degenBox);
+  const CauldronV2MasterContract = parameters.masterContract;
+  const collateral = parameters.collateral;
+  const oracleProxy = await ethers.getContractAt<ETHOracle>("ETHOracle", parameters.oracle);
+  const oracleData = parameters.oracleData;
 
   const INTEREST_CONVERSION = 1e18 / (365.25 * 3600 * 24) / 100;
   const OPENING_CONVERSION = 1e5 / 100;
 
-  const collateralization = 75 * 1e3; // 75% LTV
+  const collateralization = 85 * 1e3; // 85% LTV
   const opening = 0.5 * OPENING_CONVERSION; // .5% initial
-  const interest = parseInt(String(1 * INTEREST_CONVERSION)); // 1% Interest
-  const liquidation = 12.5 * 1e3 + 1e5;
+  const interest = parseInt(String(0 * INTEREST_CONVERSION)); // 0% Interest
+  const liquidation = 7 * 1e3 + 1e5;
 
   let initData = ethers.utils.defaultAbiCoder.encode(
     ["address", "address", "bytes", "uint64", "uint256", "uint256", "uint256"],
@@ -47,16 +53,16 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
 
   const deployEvent = tx?.events?.[0];
   expect(deployEvent?.eventSignature).to.be.eq("LogDeploy(address,bytes,address)");
-  deployments.save("AvaxCauldron", {
+  deployments.save("WETHCauldron", {
     abi: [],
     address: deployEvent?.args?.cloneAddress,
   });
-  console.log("AvaxCauldron", (await deployments.get("AvaxCauldron")).address);
+  console.log("WETHCauldron", (await deployments.get("WETHCauldron")).address);
 };
 
 export default deployFunction;
 
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
-deployFunction.tags = ["AvaxCauldron"];
+deployFunction.tags = ["WETHCauldron"];
 deployFunction.dependencies = [];

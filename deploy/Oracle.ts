@@ -2,7 +2,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { ChainId, setDeploymentSupportedChains } from "../utilities";
 import { LothricFin } from "../test/constants";
-import { WXTOracle } from "../typechain";
+import { AVAXOracle } from "../typechain";
 
 const ParametersPerChain = {
   [ChainId.Avalanche]: {
@@ -25,14 +25,14 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
 
   const { deployer } = await getNamedAccounts();
 
-  const tx = await deploy("WXTOracle", {
+  const tx = await deploy("AVAXOracle", {
     from: deployer,
     args: [],
     log: true,
     deterministicDeployment: false,
   });
 
-  await deployments.save("WXTOracle", {
+  await deployments.save("AVAXOracle", {
     abi: [],
     address: tx.address,
   });
@@ -42,5 +42,5 @@ export default deployFunction;
 
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
-deployFunction.tags = ["WXTOracle"];
+deployFunction.tags = ["AVAXOracle"];
 deployFunction.dependencies = [];

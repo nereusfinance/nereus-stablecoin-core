@@ -9,10 +9,16 @@ const ParametersPerChain = {
   [ChainId.Localhost]: {
     wavax: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
     owner: LothricFin,
+    degenBox: "",
+    nxusd: "",
+    permissionManager: "",
   },
   [ChainId.Fuji]: {
     wavax: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     owner: LothricFin,
+    degenBox: "0x3c4479f3274113dd44F770632cC89F4AdDf33617",
+    nxusd: "0x08Ccc70e9D460e8EbD9D384e261CDEDAe68F1E41",
+    permissionManager: "0xdA75546EA91c07657Cd0fB83a2Bb379cA0c09f06",
   },
 };
 
@@ -24,13 +30,9 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const chainId = await hre.getChainId();
   const parameters = ParametersPerChain[parseInt(chainId)];
 
-  const nusd = (await deployments.get("NXUSD")).address;
-  const degenBox = (await deployments.get("DegenBox")).address;
-  const permissionManager = "0xBd0c5318a49232E660fB336de4aB393093eb5a5f";
-
   const tx = await deploy("CauldronV2", {
     from: deployer,
-    args: [degenBox, nusd, permissionManager],
+    args: [parameters.degenBox, parameters.nxusd, parameters.permissionManager],
     log: true,
     deterministicDeployment: false,
   });
@@ -52,4 +54,4 @@ export default deployFunction;
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
 deployFunction.tags = ["CauldronV2"];
-deployFunction.dependencies = ["DegenBox"];
+deployFunction.dependencies = [""];

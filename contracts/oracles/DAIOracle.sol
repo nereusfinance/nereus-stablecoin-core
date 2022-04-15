@@ -9,14 +9,13 @@ interface IAggregator {
     function latestAnswer() external view returns (int256 answer);
 }
 
-contract AVAXOracle is IOracle {
+contract DAIOracle is IOracle {
     using BoringMath for uint256; // Keep everything in uint256
 
 
-    // Chainlink Data Feeds Avalanche Mainnet AVAX/USD 0x0A77230d17318075983913bC2145DB16C7366156
-    // Chainlink Data Feeds Avalanche Fuji AVAX/USD 0x5498BB86BC934c8D34FDA08E81D444153d0D06aD
-    // ?? 0xE9490791171630664Ea40db9Ca664e9F1b58A799
-    IAggregator public constant aggregatorProxy = IAggregator(0x5498BB86BC934c8D34FDA08E81D444153d0D06aD);
+
+    // Avalanche Fuji USDT/USD 	0x7898AcCC83587C3C55116c5230C17a6Cd9C71bad
+    IAggregator public constant aggregatorProxy = IAggregator(0x7898AcCC83587C3C55116c5230C17a6Cd9C71bad);
 
     // Calculates the lastest exchange rate
     // Uses both divide and multiply only for tokens not supported directly by Chainlink, for example MKR/USD
@@ -44,11 +43,11 @@ contract AVAXOracle is IOracle {
 
     /// @inheritdoc IOracle
     function name(bytes calldata) public view override returns (string memory) {
-        return "AVAX Chainlink";
+        return "DAI Chainlink";
     }
 
     /// @inheritdoc IOracle
     function symbol(bytes calldata) public view override returns (string memory) {
-        return "AVAX/USD";
+        return "DAI/USD";
     }
 }

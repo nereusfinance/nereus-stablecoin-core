@@ -2,7 +2,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { ChainId, setDeploymentSupportedChains } from "../utilities";
 import { LothricFin } from "../test/constants";
-import { NereusStableCoin } from "../typechain";
+import { DAI } from "../typechain";
 
 const ParametersPerChain = {
   [ChainId.Localhost]: {
@@ -21,14 +21,14 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
 
   const { deployer } = await getNamedAccounts();
 
-  const tx = await deploy("NereusStableCoin", {
+  const tx = await deploy("DAI", {
     from: deployer,
     args: [],
     log: true,
     deterministicDeployment: false,
   });
 
-  await deployments.save("NereusStableCoin", {
+  await deployments.save("DAI", {
     abi: [],
     address: tx.address,
   });
@@ -38,5 +38,5 @@ export default deployFunction;
 
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
-deployFunction.tags = ["NUSD"];
+deployFunction.tags = ["DAI"];
 deployFunction.dependencies = [];
