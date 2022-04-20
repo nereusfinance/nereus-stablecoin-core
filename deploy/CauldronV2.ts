@@ -7,14 +7,12 @@ import { CauldronV2 } from "../typechain";
 
 const ParametersPerChain = {
   [ChainId.Localhost]: {
-    wavax: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
     owner: LothricFin,
     degenBox: "",
     nxusd: "",
     permissionManager: "",
   },
   [ChainId.Fuji]: {
-    wavax: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     owner: LothricFin,
     degenBox: "0x3c4479f3274113dd44F770632cC89F4AdDf33617",
     nxusd: "0x08Ccc70e9D460e8EbD9D384e261CDEDAe68F1E41",

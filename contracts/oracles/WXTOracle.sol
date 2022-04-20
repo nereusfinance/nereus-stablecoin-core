@@ -15,7 +15,8 @@ contract WXTOracle is IOracle {
 
 
     // Avalanche WXT/USD 0xc22a84ce336b39e2D08324c032a12CBE8bb7e0F1
-    IAggregator public constant aggregatorProxy = IAggregator(0xc22a84ce336b39e2D08324c032a12CBE8bb7e0F1);
+    // Fuji WXT/USD 0x17F7589C98e6e58FdA9B1ceaa2021DB3779549fA
+    IAggregator public constant aggregatorProxy = IAggregator(0x17F7589C98e6e58FdA9B1ceaa2021DB3779549fA);
 
     // Calculates the lastest exchange rate
     // Uses both divide and multiply only for tokens not supported directly by Chainlink, for example MKR/USD
