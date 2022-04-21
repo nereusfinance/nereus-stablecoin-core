@@ -13,9 +13,7 @@ contract AVAXOracle is IOracle {
     using BoringMath for uint256; // Keep everything in uint256
 
 
-    // Chainlink Data Feeds Avalanche Mainnet AVAX/USD 0x0A77230d17318075983913bC2145DB16C7366156
-    // Chainlink Data Feeds Avalanche Fuji AVAX/USD 0x5498BB86BC934c8D34FDA08E81D444153d0D06aD
-    // ?? 0xE9490791171630664Ea40db9Ca664e9F1b58A799
+
     IAggregator public constant aggregatorProxy = IAggregator(0x5498BB86BC934c8D34FDA08E81D444153d0D06aD);
 
     // Calculates the lastest exchange rate

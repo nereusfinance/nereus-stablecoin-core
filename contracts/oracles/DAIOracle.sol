@@ -14,7 +14,6 @@ contract DAIOracle is IOracle {
 
 
 
-    // Avalanche Fuji USDT/USD 	0x7898AcCC83587C3C55116c5230C17a6Cd9C71bad
     IAggregator public constant aggregatorProxy = IAggregator(0x7898AcCC83587C3C55116c5230C17a6Cd9C71bad);
 
     // Calculates the lastest exchange rate

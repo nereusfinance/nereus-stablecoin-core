@@ -14,7 +14,6 @@ contract ETHOracle is IOracle {
 
 
 
-    // Avalanche Fuji ETH/USD 0x86d67c3D38D2bCeE722E601025C25a575021c6EA
     IAggregator public constant aggregatorProxy = IAggregator(0x86d67c3D38D2bCeE722E601025C25a575021c6EA);
 
     // Calculates the lastest exchange rate

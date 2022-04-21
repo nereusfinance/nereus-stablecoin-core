@@ -14,7 +14,6 @@ contract BTCOracle is IOracle {
 
 
 
-    // Avalanche Fuji BTC/USD 0x31CF013A08c6Ac228C94551d535d5BAfE19c602a
     IAggregator public constant aggregatorProxy = IAggregator(0x31CF013A08c6Ac228C94551d535d5BAfE19c602a);
 
     // Calculates the lastest exchange rate

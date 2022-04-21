@@ -15,7 +15,12 @@ contract PermissionedCauldron is CauldronV2 {
     WhitelistManager public immutable whitelistManager;
 
     /// @notice The constructor is only used for the initial master contract. Subsequent clones are initialised via `init`.
-    constructor(IBentoBoxV1 bentoBox_, IERC20 nxusd_, PermissionManager permissionManager, WhitelistManager whitelistManager_) CauldronV2(bentoBox_, nxusd_, permissionManager) public {
+    constructor(
+      IBentoBoxV1 bentoBox_,
+      IERC20 nxusd_,
+      PermissionManager permissionManager,
+      WhitelistManager whitelistManager_
+    ) CauldronV2(bentoBox_, nxusd_, permissionManager) public {
       whitelistManager = whitelistManager_;
     }
 
