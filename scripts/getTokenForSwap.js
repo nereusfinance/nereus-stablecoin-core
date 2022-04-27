@@ -5,25 +5,25 @@ async function main() {
   const [user] = await hre.ethers.getSigners();
   await hre.network.provider.request({
     method: "hardhat_impersonateAccount",
-    params: ["0xf8a2cBC21f835015248468f56c83e006943cB9ec"],
+    params: ["0x43BEddB3199F2a635C85FfC4f1af228198D268Ab"],
   });
 
-  const signer = await ethers.getSigner("0xf8a2cBC21f835015248468f56c83e006943cB9ec")
+  const signer = await ethers.getSigner("0x43BEddB3199F2a635C85FfC4f1af228198D268Ab")
 
-  const weth = await ethers.getContractAt("WETH", "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB", signer);
+  const wavax = await ethers.getContractAt("WETH", "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7", signer);
 
-  const balanceUserBefore = await weth.balanceOf("0xf8a2cBC21f835015248468f56c83e006943cB9ec");
-  console.log('Balance user weth before', balanceUserBefore);
+  const balanceUserBefore = await wavax.balanceOf("0x43BEddB3199F2a635C85FfC4f1af228198D268Ab");
+  console.log('Balance user wavax before', balanceUserBefore);
 
-  const tx = await weth.transfer(user.address, '1000000000000000000000');
+  const tx = await wavax.transfer(user.address, '1000000000000000000000');
   await tx.wait();
 
-  const wethBalance = await weth.balanceOf(user.address);
+  const wavaxBalance = await wavax.balanceOf(user.address);
   console.log('user.address', user.address);
-  console.log('My weth balance', wethBalance);
+  console.log('My wavax balance', wavaxBalance);
 
-  const balanceUserAfter = await weth.balanceOf("0xf8a2cBC21f835015248468f56c83e006943cB9ec");
-  console.log('Balance user weth after', balanceUserAfter);
+  const balanceUserAfter = await wavax.balanceOf("0x43BEddB3199F2a635C85FfC4f1af228198D268Ab");
+  console.log('Balance user wavax after', balanceUserAfter);
 }
 
 main().catch((error) => {

@@ -2,7 +2,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { ChainId, setDeploymentSupportedChains } from "../utilities";
 import { LothricFin } from "../test/constants";
-import { WETHNXUSDSwapper } from "../typechain";
+import { WAVAXNXUSDSwapper } from "../typechain";
 
 const ParametersPerChain = {
   [ChainId.Avalanche]: {
@@ -22,14 +22,14 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
 
   const { deployer } = await getNamedAccounts();
 
-  const tx = await deploy("WETHNXUSDSwapper", {
+  const tx = await deploy("WAVAXNXUSDSwapper", {
     from: deployer,
     args: [],
     log: true,
     deterministicDeployment: false,
   });
 
-  await deployments.save("WETHNXUSDSwapper", {
+  await deployments.save("WAVAXNXUSDSwapper", {
     abi: [],
     address: tx.address,
   });
@@ -39,5 +39,5 @@ export default deployFunction;
 
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
-deployFunction.tags = ["WETHNXUSDSwapper"];
+deployFunction.tags = ["WAVAXNXUSDSwapper"];
 deployFunction.dependencies = [];
