@@ -4,7 +4,6 @@ pragma solidity 0.8.9;
 import "@sushiswap/core/contracts/uniswapv2/interfaces/IUniswapV2Factory.sol";
 import "@sushiswap/core/contracts/uniswapv2/interfaces/IUniswapV2Pair.sol";
 import "../../interfaces/ISwapperGeneric.sol";
-import "hardhat/console.sol";
 
 interface Zap {
   function exchange_underlying(address _pool, int128 i, int128 j, uint256 dx, uint256 min_dy, address receiver) external returns (uint256);
@@ -57,8 +56,8 @@ contract WAVAXNXUSDSwapper is ISwapperGeneric {
 
     /// @inheritdoc ISwapperGeneric
   function swap(
-      IERC20 fromToken,
-      IERC20 toToken,
+      IERC20 ,
+      IERC20 ,
       address recipient,
       uint256 shareToMin,
       uint256 shareFrom
