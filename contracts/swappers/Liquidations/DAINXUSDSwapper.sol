@@ -36,7 +36,7 @@ interface IBentoBoxV1 {
 contract DAINXUSDSwapper is ISwapperGeneric {
     IBentoBoxV1 public constant degenBox = IBentoBoxV1(0x3c4479f3274113dd44F770632cC89F4AdDf33617);
 
-    CurvePool public constant NXUSD3POOL = 0x6BF6fc7EaF84174bb7e1610Efd865f0eBD2AA96D;
+    address  public constant NXUSD3POOL = 0x6BF6fc7EaF84174bb7e1610Efd865f0eBD2AA96D;
     Zap public constant ZAP3POOL = Zap(0x001E3BA199B4FF4B5B6e97aCD96daFC0E2e4156e);
 
     IERC20 public constant DAIe = IERC20(0xd586E7F844cEa2F87f50152665BCbc2C279D8d70);
@@ -75,7 +75,7 @@ contract DAINXUSDSwapper is ISwapperGeneric {
 
         (, shareReturned) = degenBox.deposit(NXUSD, address(degenBox), recipient, amountTo, 0);
 
-        extraShare = shareReturned.sub(shareToMin);
+        extraShare = shareReturned - shareToMin;
     }
 
     /// @inheritdoc ISwapperGeneric
