@@ -21,7 +21,7 @@ const ParametersPerChain = {
     collateral: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     oracle: "0x3FB913D0c17AD4e8e5aEFCcA97B9dDEaC403cDc2",
     oracleData: "0x0000000000000000000000000000000000000000",
-    masterContract: "0xA5D590c9950df89Bb287d3CB860380C89116288A",
+    masterContract: "0x38FA19EBE61c5751EE5a4552301E517e24438Cf3",
   },
 };
 
