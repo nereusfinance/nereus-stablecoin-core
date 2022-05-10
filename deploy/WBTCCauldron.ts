@@ -7,6 +7,14 @@ import { ChainId, setDeploymentSupportedChains } from "../utilities";
 import { LothricFin } from "../test/constants";
 
 const ParametersPerChain = {
+  [ChainId.Avalanche]: {
+    owner: LothricFin,
+    degenBox: "0x0B1F9C2211F77Ec3Fa2719671c5646cf6e59B775",
+    collateral: "0x50b7545627a5162F82A992c33b87aDc75187B218",
+    oracle: "0x24ed1513d790f8F9A1A177F53915c45d4F590349",
+    oracleData: "0x0000000000000000000000000000000000000000",
+    masterContract: "0xE767C6C3Bf42f550A5A258A379713322B6c4c060",
+  },
   [ChainId.Localhost]: {
     owner: LothricFin,
     degenBox: "",

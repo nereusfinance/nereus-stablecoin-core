@@ -6,10 +6,16 @@ import { LothricFin } from "../test/constants";
 import { CauldronV2 } from "../typechain";
 
 const ParametersPerChain = {
+  [ChainId.Avalanche]: {
+    owner: LothricFin,
+    degenBox: "0x0B1F9C2211F77Ec3Fa2719671c5646cf6e59B775",
+    nxusd: "0xF14f4CE569cB3679E99d5059909E23B07bd2F387",
+    permissionManager: "0xaAd9d30E43868e09777e0Ac090C7b8ffa583E942",
+  },
   [ChainId.Localhost]: {
     owner: LothricFin,
-    degenBox: "",
-    nxusd: "",
+    degenBox: "0x0B1F9C2211F77Ec3Fa2719671c5646cf6e59B775",
+    nxusd: "0xF14f4CE569cB3679E99d5059909E23B07bd2F387",
     permissionManager: "",
   },
   [ChainId.Fuji]: {

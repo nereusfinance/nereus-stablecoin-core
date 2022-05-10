@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: None
 
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
@@ -1283,7 +1283,7 @@ contract CauldronV2 is BoringOwnable, IMasterContract {
         emit LogFeeTo(newFeeTo);
     }
 
-    /// @notice reduces the supply of NUSD
+    /// @notice reduces the supply of NXUSD
     /// @param amount amount to reduce supply by
     function reduceSupply(uint256 amount) public virtual {
         require(msg.sender == masterContract.owner(), "Caller is not the owner");

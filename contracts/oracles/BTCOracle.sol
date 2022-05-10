@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: None
 pragma solidity 0.6.12;
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringMath.sol";
 import "../interfaces/IOracle.sol";
@@ -12,14 +12,12 @@ interface IAggregator {
 contract BTCOracle is IOracle {
     using BoringMath for uint256; // Keep everything in uint256
 
-
-
-    IAggregator public constant aggregatorProxy = IAggregator(0x31CF013A08c6Ac228C94551d535d5BAfE19c602a);
+    IAggregator public constant aggregatorProxy = IAggregator(0x2779D32d5166BAaa2B2b658333bA7e6Ec0C65743);
 
     // Calculates the lastest exchange rate
     // Uses both divide and multiply only for tokens not supported directly by Chainlink, for example MKR/USD
     function _get() internal view returns (uint256) {
-        return 1e26 / uint256(aggregatorProxy.latestAnswer());
+        return 1e16 / uint256(aggregatorProxy.latestAnswer());
     }
 
     // Get the latest exchange rate

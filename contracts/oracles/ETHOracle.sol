@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: None
 pragma solidity 0.6.12;
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringMath.sol";
 import "../interfaces/IOracle.sol";
@@ -12,9 +12,7 @@ interface IAggregator {
 contract ETHOracle is IOracle {
     using BoringMath for uint256; // Keep everything in uint256
 
-
-
-    IAggregator public constant aggregatorProxy = IAggregator(0x86d67c3D38D2bCeE722E601025C25a575021c6EA);
+    IAggregator public constant aggregatorProxy = IAggregator(0x976B3D034E162d8bD72D6b9C989d545b839003b0);
 
     // Calculates the lastest exchange rate
     // Uses both divide and multiply only for tokens not supported directly by Chainlink, for example MKR/USD
