@@ -89,7 +89,7 @@ const config: HardhatUserConfig = {
       chainId: 43114,
       url: "https://api.avax.network/ext/bc/C/rpc",
       accounts,
-      gasPrice: 75 * 1e9,
+      gasPrice: "auto",
       live: true,
       saveDeployments: true,
       tags: ["prod"],
