@@ -39,7 +39,7 @@ contract NXUSDWETHSwapper is ISwapperGeneric {
     IERC20 public constant USDCe = IERC20(0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664);
     IERC20 public constant NXUSD = IERC20(0xF14f4CE569cB3679E99d5059909E23B07bd2F387);
 
-    IUniswapV2Pair public constant WETH_USDCe = IUniswapV2Pair(0xDb636857317c46B453d5AB400b278cF2dadC996E);
+    IUniswapV2Pair public constant WETH_USDCe = IUniswapV2Pair(0x199fb78019A08af2Cb6a078409D0C8233Eba8a0c);
 
     constructor() {
         NXUSD.approve(address(ZAP3POOL), type(uint256).max);
@@ -83,7 +83,7 @@ contract NXUSDWETHSwapper is ISwapperGeneric {
         (uint256 reserve0, uint256 reserve1,) = pool.getReserves();
         uint256 fromSecondTokenToFirst = _getAmountOut(tokenAmount, reserve1, reserve0);
         token.transfer(address(pool), tokenAmount);
-        pool.swap(0, fromSecondTokenToFirst, address(this), new bytes(0));
+        pool.swap(fromSecondTokenToFirst, 0, address(this), new bytes(0));
     }
 
     /// @inheritdoc ISwapperGeneric
