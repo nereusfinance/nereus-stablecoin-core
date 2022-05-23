@@ -81,9 +81,9 @@ contract NXUSDWAVAXSwapper is ISwapperGeneric {
 
     function _traderJoeSwap(IERC20 token, IUniswapV2Pair pool, uint256 tokenAmount) private {
         (uint256 reserve0, uint256 reserve1, ) = pool.getReserves();
-        uint256 fromFirstTokenToSecond = _getAmountOut(tokenAmount, reserve0, reserve1);
+        uint256 fromSecondTokenToFirst = _getAmountOut(tokenAmount, reserve1, reserve0);
         token.transfer(address(pool), tokenAmount);
-        pool.swap(0, fromFirstTokenToSecond, address(this), new bytes(0));
+        pool.swap(0, fromSecondTokenToFirst, address(this), new bytes(0));
     }
 
     /// @inheritdoc ISwapperGeneric
