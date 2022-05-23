@@ -6,15 +6,12 @@ import { PermissionManager } from "../typechain";
 
 const ParametersPerChain = {
   [ChainId.Avalanche]: {
-    wavax: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
     owner: LothricFin,
   },
   [ChainId.Localhost]: {
-    wavax: "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7",
     owner: LothricFin,
   },
   [ChainId.Fuji]: {
-    wavax: "0x1D308089a2D1Ced3f1Ce36B1FcaF815b07217be3",
     owner: LothricFin,
   },
 };

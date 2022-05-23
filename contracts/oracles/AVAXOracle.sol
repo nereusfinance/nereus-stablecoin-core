@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: None
 pragma solidity 0.6.12;
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringMath.sol";
 import "../interfaces/IOracle.sol";
@@ -12,15 +12,12 @@ interface IAggregator {
 contract AVAXOracle is IOracle {
     using BoringMath for uint256; // Keep everything in uint256
 
-
-    // Chainlink Data Feeds Avalanche Mainnet AVAX/USD 0x0A77230d17318075983913bC2145DB16C7366156
-    // Chainlink Data Feeds Avalanche Fuji AVAX/USD 0x5498BB86BC934c8D34FDA08E81D444153d0D06aD
-    IAggregator public constant avaxOracle = IAggregator(0xE9490791171630664Ea40db9Ca664e9F1b58A799);
+    IAggregator public constant aggregatorProxy = IAggregator(0x0A77230d17318075983913bC2145DB16C7366156);
 
     // Calculates the lastest exchange rate
     // Uses both divide and multiply only for tokens not supported directly by Chainlink, for example MKR/USD
     function _get() internal view returns (uint256) {
-        return 1e26 / uint256(avaxOracle.latestAnswer());
+        return 1e26 / uint256(aggregatorProxy.latestAnswer());
     }
 
     // Get the latest exchange rate
@@ -48,6 +45,6 @@ contract AVAXOracle is IOracle {
 
     /// @inheritdoc IOracle
     function symbol(bytes calldata) public view override returns (string memory) {
-        return "LINK/AVAX";
+        return "AVAX/USD";
     }
 }
