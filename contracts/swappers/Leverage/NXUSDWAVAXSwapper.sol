@@ -40,7 +40,7 @@ contract NXUSDWAVAXSwapper is ISwapperGeneric {
     IUniswapV2Pair public constant WAVAX_USDTe = IUniswapV2Pair(0xeD8CBD9F0cE3C6986b22002F03c6475CEb7a6256);
 
     constructor() {
-        USDTe.approve(address(ZAP3POOL), type(uint256).max);
+        NXUSD.approve(address(ZAP3POOL), type(uint256).max);
     }
 
     function _getAmountOut(
