@@ -1,30 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
-// The BentoBox
-
-//  ▄▄▄▄· ▄▄▄ . ▐ ▄ ▄▄▄▄▄      ▄▄▄▄·       ▐▄• ▄
-//  ▐█ ▀█▪▀▄.▀·█▌▐█•██  ▪     ▐█ ▀█▪▪      █▌█▌▪
-//  ▐█▀▀█▄▐▀▀▪▄▐█▐▐▌ ▐█.▪ ▄█▀▄ ▐█▀▀█▄ ▄█▀▄  ·██·
-//  ██▄▪▐█▐█▄▄▌██▐█▌ ▐█▌·▐█▌.▐▌██▄▪▐█▐█▌.▐▌▪▐█·█▌
-//  ·▀▀▀▀  ▀▀▀ ▀▀ █▪ ▀▀▀  ▀█▄▀▪·▀▀▀▀  ▀█▄▀▪•▀▀ ▀▀
-
-// This contract stores funds, handles their transfers, supports flash loans and strategies.
-
-// Copyright (c) 2021 BoringCrypto - All rights reserved
-// Twitter: @Boring_Crypto
-
-// Special thanks to Keno for all his hard work and support
-
-// Version 22-Mar-2021
 
 pragma solidity 0.6.12;
 pragma experimental ABIEncoderV2;
-
-// solhint-disable avoid-low-level-calls
-// solhint-disable not-rely-on-time
-// solhint-disable no-inline-assembly
-
-// File @boringcrypto/boring-solidity/contracts/interfaces/IERC20.sol@v1.2.0
-// License-Identifier: MIT
 
 interface IERC20 {
     function totalSupply() external view returns (uint256);
@@ -49,9 +26,6 @@ interface IERC20 {
         bytes32 s
     ) external;
 }
-
-// File contracts/interfaces/IFlashLoan.sol
-// License-Identifier: MIT
 
 interface IFlashBorrower {
     /// @notice The flashloan callback. `amount` + `fee` needs to repayed to msg.sender before this call returns.
@@ -85,17 +59,11 @@ interface IBatchFlashBorrower {
     ) external;
 }
 
-// File contracts/interfaces/IWETH.sol
-// License-Identifier: MIT
-
 interface IWETH {
     function deposit() external payable;
 
     function withdraw(uint256) external;
 }
-
-// File contracts/interfaces/IStrategy.sol
-// License-Identifier: MIT
 
 interface IStrategy {
     /// @notice Send the assets to the Strategy and call skim to invest them.
@@ -120,9 +88,6 @@ interface IStrategy {
     /// @return amountAdded The delta (+profit or -loss) that occured in contrast to `balance`.
     function exit(uint256 balance) external returns (int256 amountAdded);
 }
-
-// File @boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol@v1.2.0
-// License-Identifier: MIT
 
 library BoringERC20 {
     bytes4 private constant SIG_SYMBOL = 0x95d89b41; // symbol()
@@ -162,11 +127,7 @@ library BoringERC20 {
     }
 }
 
-// File @boringcrypto/boring-solidity/contracts/libraries/BoringMath.sol@v1.2.0
-// License-Identifier: MIT
-
-/// @notice A library for performing overflow-/underflow-safe math,
-/// updated with awesomeness from of DappHub (https://github.com/dapphub/ds-math).
+/// @notice A library for performing overflow-/underflow-safe math
 library BoringMath {
     function add(uint256 a, uint256 b) internal pure returns (uint256 c) {
         require((c = a + b) >= b, "BoringMath: Add Overflow");
@@ -228,9 +189,6 @@ library BoringMath32 {
         require((c = a - b) <= a, "BoringMath: Underflow");
     }
 }
-
-// File @boringcrypto/boring-solidity/contracts/libraries/BoringRebase.sol@v1.2.0
-// License-Identifier: MIT
 
 struct Rebase {
     uint128 elastic;
@@ -337,12 +295,6 @@ library RebaseLibrary {
     }
 }
 
-// File @boringcrypto/boring-solidity/contracts/BoringOwnable.sol@v1.2.0
-// License-Identifier: MIT
-
-// Source: https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol + Claimable.sol
-// Edited by BoringCrypto
-
 contract BoringOwnableData {
     address public owner;
     address public pendingOwner;
@@ -401,9 +353,6 @@ contract BoringOwnable is BoringOwnableData {
     }
 }
 
-// File @boringcrypto/boring-solidity/contracts/interfaces/IMasterContract.sol@v1.2.0
-// License-Identifier: MIT
-
 interface IMasterContract {
     /// @notice Init function that gets called from `BoringFactory.deploy`.
     /// Also kown as the constructor for cloned contracts.
@@ -411,9 +360,6 @@ interface IMasterContract {
     /// @param data Can be abi encoded arguments or anything else.
     function init(bytes calldata data) external payable;
 }
-
-// File @boringcrypto/boring-solidity/contracts/BoringFactory.sol@v1.2.0
-// License-Identifier: MIT
 
 contract BoringFactory {
     event LogDeploy(address indexed masterContract, bytes data, address indexed cloneAddress);
@@ -474,9 +420,6 @@ contract BoringFactory {
          return pools;
      }
 }
-
-// File contracts/MasterContractManager.sol
-// License-Identifier: UNLICENSED
 
 contract MasterContractManager is BoringOwnable, BoringFactory {
     event LogWhiteListMasterContract(address indexed masterContract, bool approved);
@@ -605,9 +548,6 @@ contract MasterContractManager is BoringOwnable, BoringFactory {
     }
 }
 
-// File @boringcrypto/boring-solidity/contracts/BoringBatchable.sol@v1.2.0
-// License-Identifier: MIT
-
 contract BaseBoringBatchable {
     /// @dev Helper function to extract a useful revert message from a failed call.
     /// If the returned data is malformed or not correctly abi encoded then this call can fail itself.
@@ -662,12 +602,6 @@ contract BoringBatchable is BaseBoringBatchable {
     }
 }
 
-// File contracts/DegenBox.sol
-// License-Identifier: UNLICENSED
-
-/// @title DegenBox
-/// @author BoringCrypto, Keno
-/// @notice The BentoBox is a vault for tokens. The stored tokens can be flash loaned and used in strategies.
 /// Yield from this will go to the token depositors.
 /// Rebasing tokens ARE NOT supported and WILL cause loss of funds.
 /// Any funds transfered directly onto the BentoBox will be lost, use the deposit function instead.

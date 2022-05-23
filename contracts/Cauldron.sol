@@ -26,7 +26,7 @@ import "@boringcrypto/boring-solidity/contracts/interfaces/IMasterContract.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringRebase.sol";
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringERC20.sol";
 import "@sushiswap/bentobox-sdk/contracts/IBentoBoxV1.sol";
-import "./NereusStableCoin.sol";
+import "./NXUSD.sol";
 import "./interfaces/IOracle.sol";
 import "./interfaces/ISwapper.sol";
 
@@ -54,7 +54,7 @@ contract Cauldron is BoringOwnable, IMasterContract {
     // Immutables (for MasterContract and all clones)
     IBentoBoxV1 public immutable bentoBox;
     Cauldron public immutable masterContract;
-    IERC20 public immutable magicInternetMoney;
+    IERC20 public immutable nxusd;
 
     // MasterContract variables
     address public feeTo;
@@ -99,9 +99,9 @@ contract Cauldron is BoringOwnable, IMasterContract {
     uint256 private constant BORROW_OPENING_FEE_PRECISION = 1e5;
 
     /// @notice The constructor is only used for the initial master contract. Subsequent clones are initialised via `init`.
-    constructor(IBentoBoxV1 bentoBox_, IERC20 magicInternetMoney_) public {
+    constructor(IBentoBoxV1 bentoBox_, IERC20 nxusd_) public {
         bentoBox = bentoBox_;
-        magicInternetMoney = magicInternetMoney_;
+        nxusd = nxusd_;
         masterContract = this;
     }
 
@@ -245,8 +245,8 @@ contract Cauldron is BoringOwnable, IMasterContract {
         userBorrowPart[msg.sender] = userBorrowPart[msg.sender].add(part);
 
         // As long as there are tokens on this contract you can 'mint'... this enables limiting borrows
-        share = bentoBox.toShare(magicInternetMoney, amount, false);
-        bentoBox.transfer(magicInternetMoney, address(this), to, share);
+        share = bentoBox.toShare(nxusd, amount, false);
+        bentoBox.transfer(nxusd, address(this), to, share);
 
         emit LogBorrow(msg.sender, to, amount.add(feeAmount), part);
     }
@@ -268,8 +268,8 @@ contract Cauldron is BoringOwnable, IMasterContract {
         (totalBorrow, amount) = totalBorrow.sub(part, true);
         userBorrowPart[to] = userBorrowPart[to].sub(part);
 
-        uint256 share = bentoBox.toShare(magicInternetMoney, amount, true);
-        bentoBox.transfer(magicInternetMoney, skim ? address(bentoBox) : msg.sender, address(this), share);
+        uint256 share = bentoBox.toShare(nxusd, amount, true);
+        bentoBox.transfer(nxusd, skim ? address(bentoBox) : msg.sender, address(this), share);
         emit LogRepay(skim ? address(bentoBox) : msg.sender, to, amount, part);
     }
 
@@ -438,7 +438,7 @@ contract Cauldron is BoringOwnable, IMasterContract {
                 }
             } else if (action == ACTION_GET_REPAY_SHARE) {
                 int256 part = abi.decode(datas[i], (int256));
-                value1 = bentoBox.toShare(magicInternetMoney, totalBorrow.toElastic(_num(part, value1, value2), true), true);
+                value1 = bentoBox.toShare(nxusd, totalBorrow.toElastic(_num(part, value1, value2), true), true);
             } else if (action == ACTION_GET_REPAY_PART) {
                 int256 amount = abi.decode(datas[i], (int256));
                 value1 = totalBorrow.toBase(_num(amount, value1, value2), false);
@@ -502,16 +502,16 @@ contract Cauldron is BoringOwnable, IMasterContract {
         totalBorrow = _totalBorrow;
         totalCollateralShare = totalCollateralShare.sub(allCollateralShare);
 
-        uint256 allBorrowShare = bentoBox.toShare(magicInternetMoney, allBorrowAmount, true);
+        uint256 allBorrowShare = bentoBox.toShare(nxusd, allBorrowAmount, true);
 
         // Swap using a swapper freely chosen by the caller
         // Open (flash) liquidation: get proceeds first and provide the borrow after
         bentoBox.transfer(collateral, address(this), to, allCollateralShare);
         if (swapper != ISwapper(0)) {
-            swapper.swap(collateral, magicInternetMoney, msg.sender, allBorrowShare, allCollateralShare);
+            swapper.swap(collateral, nxusd, msg.sender, allBorrowShare, allCollateralShare);
         }
 
-        bentoBox.transfer(magicInternetMoney, msg.sender, address(this), allBorrowShare);
+        bentoBox.transfer(nxusd, msg.sender, address(this), allBorrowShare);
     }
 
     /// @notice Withdraws the fees accumulated.
@@ -519,8 +519,8 @@ contract Cauldron is BoringOwnable, IMasterContract {
         accrue();
         address _feeTo = masterContract.feeTo();
         uint256 _feesEarned = accrueInfo.feesEarned;
-        uint256 share = bentoBox.toShare(magicInternetMoney, _feesEarned, false);
-        bentoBox.transfer(magicInternetMoney, address(this), _feeTo, share);
+        uint256 share = bentoBox.toShare(nxusd, _feesEarned, false);
+        bentoBox.transfer(nxusd, address(this), _feeTo, share);
         accrueInfo.feesEarned = 0;
 
         emit LogWithdrawFees(_feeTo, _feesEarned);
@@ -538,7 +538,7 @@ contract Cauldron is BoringOwnable, IMasterContract {
     /// @param amount amount to reduce supply by
     function reduceSupply(uint256 amount) public {
         require(msg.sender == masterContract.owner(), "Caller is not the owner");
-        bentoBox.withdraw(magicInternetMoney, address(this), address(this), amount, 0);
-        NereusStableCoin(address(magicInternetMoney)).burn(amount);
+        bentoBox.withdraw(nxusd, address(this), address(this), amount, 0);
+        NXUSD(address(nxusd)).burn(amount);
     }
 }

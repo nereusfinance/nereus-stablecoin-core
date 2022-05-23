@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: None
 pragma solidity 0.6.12;
 import "@boringcrypto/boring-solidity/contracts/libraries/BoringMath.sol";
 import "../interfaces/IOracle.sol";
@@ -14,13 +14,12 @@ contract WXTOracle is IOracle {
 
 
 
-    // Avalanche WXT/USDT 0xc22a84ce336b39e2D08324c032a12CBE8bb7e0F1
-    IAggregator public constant wxtOracle = IAggregator(0xc22a84ce336b39e2D08324c032a12CBE8bb7e0F1);
+    IAggregator public constant aggregatorProxy = IAggregator(0x17F7589C98e6e58FdA9B1ceaa2021DB3779549fA);
 
     // Calculates the lastest exchange rate
     // Uses both divide and multiply only for tokens not supported directly by Chainlink, for example MKR/USD
     function _get() internal view returns (uint256) {
-        return 1e24 / uint256(wxtOracle.latestAnswer());
+        return 1e24 / uint256(aggregatorProxy.latestAnswer());
     }
 
     // Get the latest exchange rate
