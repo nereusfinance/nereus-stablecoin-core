@@ -66,7 +66,7 @@ contract NXUSDWAVAXSwapper is ISwapperGeneric {
 
         //       NXUSD => USDT.e
 
-        uint256 usdteAmount = ZAP3POOL.exchange_underlying(NXUSD3POOL, 0, 3, shareToMin, 0, address(this));
+        uint256 usdteAmount = ZAP3POOL.exchange_underlying(NXUSD3POOL, 0, 3, amountFrom, 0, address(this));
         //      USDT.e => WAVAX
         _traderJoeSwap(USDTe, WAVAX_USDTe, usdteAmount);
 
