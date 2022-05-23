@@ -66,14 +66,13 @@ contract NXUSDWAVAXSwapper is ISwapperGeneric {
 
         //       NXUSD => USDT.e
 
-        uint256 usdteAmount = ZAP3POOL.exchange_underlying(NXUSD3POOL, 0, 3, amountFrom, 0, address(this));
-
+        uint256 usdteAmount = ZAP3POOL.exchange_underlying(NXUSD3POOL, 0, 3, shareToMin, 0, address(this));
         //      USDT.e => WAVAX
         _traderJoeSwap(USDTe, WAVAX_USDTe, usdteAmount);
 
         uint256 wavaxAmount = WAVAX.balanceOf(address(this));
 
-        (, shareReturned) = DEGENBOX.deposit(WAVAX, address(this), recipient, wavaxAmount, 0);
+       (, shareReturned) = DEGENBOX.deposit(WAVAX, address(this), recipient, wavaxAmount, 0);
         extraShare = shareReturned - shareToMin;
     }
 
@@ -81,7 +80,7 @@ contract NXUSDWAVAXSwapper is ISwapperGeneric {
         (uint256 reserve0, uint256 reserve1, ) = pool.getReserves();
         uint256 fromSecondTokenToFirst = _getAmountOut(tokenAmount, reserve1, reserve0);
         token.transfer(address(pool), tokenAmount);
-        pool.swap(0, fromSecondTokenToFirst, address(this), new bytes(0));
+        pool.swap(fromSecondTokenToFirst, 0, address(this), new bytes(0));
     }
 
     /// @inheritdoc ISwapperGeneric
