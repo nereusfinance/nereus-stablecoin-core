@@ -40,4 +40,5 @@ export default deployFunction;
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
 deployFunction.tags = ["NXUSDWAVAXSwapper"];
+
 deployFunction.dependencies = [];
