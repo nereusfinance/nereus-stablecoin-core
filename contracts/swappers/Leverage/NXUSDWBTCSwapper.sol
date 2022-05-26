@@ -27,7 +27,7 @@ interface IBentoBoxV1 {
     ) external returns (uint256, uint256);
 }
 
-contract NXUSDWBTCSwapper is ISwapperGeneric {
+contract NXUSDWBTCSwapper {
     IBentoBoxV1 public constant DEGENBOX = IBentoBoxV1(0x3c4479f3274113dd44F770632cC89F4AdDf33617);
 
     address public constant NXUSD3POOL = 0x6BF6fc7EaF84174bb7e1610Efd865f0eBD2AA96D;
@@ -52,16 +52,14 @@ contract NXUSDWBTCSwapper is ISwapperGeneric {
         uint256 numerator = amountInWithFee * reserveOut;
         uint256 denominator = (reserveIn * 1000) + amountInWithFee;
         amountOut = numerator / denominator;
+
     }
 
-    /// @inheritdoc ISwapperGeneric
     function swap(
-        IERC20,
-        IERC20,
         address recipient,
         uint256 shareToMin,
         uint256 shareFrom
-    ) public override returns (uint256 extraShare, uint256 shareReturned) {
+    ) public returns (uint256 extraShare, uint256 shareReturned) {
         (uint256 amountFrom,) = DEGENBOX.withdraw(NXUSD, address(this), address(this), 0, shareFrom);
 
         //       NXUSD => USDC.e
@@ -70,7 +68,6 @@ contract NXUSDWBTCSwapper is ISwapperGeneric {
 
         //      USDC.e => WBTC
         _traderJoeSwap(USDCe, WBTC_USDCe, usdceAmount);
-
         uint256 wbtcAmount = WBTC.balanceOf(address(this));
 
         (, shareReturned) = DEGENBOX.deposit(WBTC, address(this), recipient, wbtcAmount, 0);
@@ -82,17 +79,5 @@ contract NXUSDWBTCSwapper is ISwapperGeneric {
         uint256 fromSecondTokenToFirst = _getAmountOut(tokenAmount, reserve1, reserve0);
         token.transfer(address(pool), tokenAmount);
         pool.swap(fromSecondTokenToFirst, 0, address(this), new bytes(0));
-    }
-
-    /// @inheritdoc ISwapperGeneric
-    function swapExact(
-        IERC20,
-        IERC20,
-        address,
-        address,
-        uint256,
-        uint256
-    ) public override returns (uint256 shareUsed, uint256 shareReturned) {
-        return (0, 0);
     }
 }
