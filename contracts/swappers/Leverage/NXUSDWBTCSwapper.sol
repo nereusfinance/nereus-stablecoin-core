@@ -41,6 +41,7 @@ contract NXUSDWBTCSwapper {
 
     constructor() {
         NXUSD.approve(address(ZAP3POOL), type(uint256).max);
+        WBTC.approve(address(DEGENBOX), type(uint256).max);
     }
 
     function _getAmountOut(
