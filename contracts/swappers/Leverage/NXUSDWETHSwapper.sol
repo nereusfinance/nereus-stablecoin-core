@@ -5,7 +5,30 @@ pragma solidity 0.8.9;
 
 import "@sushiswap/core/contracts/uniswapv2/interfaces/IUniswapV2Factory.sol";
 import "@sushiswap/core/contracts/uniswapv2/interfaces/IUniswapV2Pair.sol";
-import "../../interfaces/ISwapperGeneric.sol";
+
+interface IERC20 {
+    function totalSupply() external view returns (uint256);
+
+    function balanceOf(address account) external view returns (uint256);
+    function transfer(address recipient, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+
+    function approve(address spender, uint256 amount) external returns (bool);
+
+    event Transfer(address indexed from, address indexed to, uint256 value);
+    event Approval(address indexed owner, address indexed spender, uint256 value);
+
+    /// @notice EIP 2612
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external;
+}
 
 interface Zap {
     function exchange_underlying(address _pool, int128 i, int128 j, uint256 dx, uint256 min_dy, address receiver) external returns (uint256);
@@ -29,8 +52,8 @@ interface IBentoBoxV1 {
     ) external returns (uint256, uint256);
 }
 
-contract NXUSDWETHSwapper is ISwapperGeneric {
-    IBentoBoxV1 public constant DEGENBOX = IBentoBoxV1(0x3c4479f3274113dd44F770632cC89F4AdDf33617);
+contract NXUSDWETHSwapper {
+    IBentoBoxV1 public constant DEGENBOX = IBentoBoxV1(0x0B1F9C2211F77Ec3Fa2719671c5646cf6e59B775);
 
     address public constant NXUSD3POOL = 0x6BF6fc7EaF84174bb7e1610Efd865f0eBD2AA96D;
     Zap public constant ZAP3POOL = Zap(0x001E3BA199B4FF4B5B6e97aCD96daFC0E2e4156e);
@@ -43,6 +66,7 @@ contract NXUSDWETHSwapper is ISwapperGeneric {
 
     constructor() {
         NXUSD.approve(address(ZAP3POOL), type(uint256).max);
+        WETH.approve(address(DEGENBOX), type(uint256).max);
     }
 
     function _getAmountOut(
@@ -56,14 +80,11 @@ contract NXUSDWETHSwapper is ISwapperGeneric {
         amountOut = numerator / denominator;
     }
 
-    /// @inheritdoc ISwapperGeneric
     function swap(
-        IERC20,
-        IERC20,
         address recipient,
         uint256 shareToMin,
         uint256 shareFrom
-    ) public override returns (uint256 extraShare, uint256 shareReturned) {
+    ) public returns (uint256 extraShare, uint256 shareReturned) {
         (uint256 amountFrom,) = DEGENBOX.withdraw(NXUSD, address(this), address(this), 0, shareFrom);
 
         //       NXUSD => USDC.e
@@ -84,17 +105,5 @@ contract NXUSDWETHSwapper is ISwapperGeneric {
         uint256 fromSecondTokenToFirst = _getAmountOut(tokenAmount, reserve1, reserve0);
         token.transfer(address(pool), tokenAmount);
         pool.swap(fromSecondTokenToFirst, 0, address(this), new bytes(0));
-    }
-
-    /// @inheritdoc ISwapperGeneric
-    function swapExact(
-        IERC20,
-        IERC20,
-        address,
-        address,
-        uint256,
-        uint256
-    ) public override returns (uint256 shareUsed, uint256 shareReturned) {
-        return (0, 0);
     }
 }
