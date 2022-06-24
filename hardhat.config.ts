@@ -11,6 +11,7 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-deploy";
 import "./tasks";
+import "./tasks/mockOraclePrice";
 
 import { HardhatUserConfig } from "hardhat/config";
 
@@ -34,12 +35,12 @@ const config: HardhatUserConfig = {
     sources: process.env.CONTRACTS_PATH || "contracts",
     tests: "test",
   },
-  etherscan: {
-    apiKey: {
-      avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
-      avalanche: process.env.SNOWTRACE_API_KEY,
-    },
-  },
+  // etherscan: {
+  //   apiKey: {
+  //     avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
+  //     avalanche: process.env.SNOWTRACE_API_KEY,
+  //   },
+  // },
   gasReporter: {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     currency: "USD",
@@ -87,7 +88,8 @@ const config: HardhatUserConfig = {
     },
     avalanche: {
       chainId: 43114,
-      url: "https://api.avax.network/ext/bc/C/rpc",
+      // url: `${process.env.TENDERLY_FORK_RPC}`,
+      url: `http://localhost:8545`,
       accounts,
       gasPrice: 75 * 1e9,
       live: true,
