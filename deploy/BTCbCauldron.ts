@@ -1,7 +1,7 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 import { ethers } from "hardhat";
-import { BentoBoxV1, LINKOracle } from "../typechain";
+import { BentoBoxV1, JOEOracle } from "../typechain";
 import { expect } from "chai";
 import { ChainId, setDeploymentSupportedChains } from "../utilities";
 import { LothricFin } from "../test/constants";
@@ -10,8 +10,8 @@ const ParametersPerChain = {
   [ChainId.Avalanche]: {
     owner: LothricFin,
     degenBox: "0x0B1F9C2211F77Ec3Fa2719671c5646cf6e59B775",
-    collateral: "0x5947BB275c521040051D82396192181b413227A3",
-    oracle: "0x7D9e9b0c5dab2202d2B3b29371DAa8e0f11d49B6",
+    collateral: "0x152b9d0FdC40C096757F570A51E494bd4b943E50",
+    oracle: "0x24ed1513d790f8F9A1A177F53915c45d4F590349",
     oracleData: "0x0000000000000000000000000000000000000000",
     masterContract: "0xE767C6C3Bf42f550A5A258A379713322B6c4c060",
   },
@@ -41,16 +41,16 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const BentoBox = await ethers.getContractAt<BentoBoxV1>("BentoBoxV1", parameters.degenBox);
   const CauldronV2MasterContract = parameters.masterContract;
   const collateral = parameters.collateral;
-  const oracleProxy = await ethers.getContractAt<LINKOracle>("LINKOracle", parameters.oracle);
+  const oracleProxy = await ethers.getContractAt("BTCOracle", parameters.oracle);
   const oracleData = parameters.oracleData;
 
   const INTEREST_CONVERSION = 1e18 / (365.25 * 3600 * 24) / 100;
   const OPENING_CONVERSION = 1e5 / 100;
 
-  const collateralization = 50 * 1e3; // 50% LTV
+  const collateralization = 85 * 1e3; // 85% LTV
   const opening = 0.5 * OPENING_CONVERSION; // .5% initial
   const interest = parseInt(String(0 * INTEREST_CONVERSION)); // 0% Interest
-  const liquidation = 12.5 * 1e3 + 1e5;
+  const liquidation = 7 * 1e3 + 1e5;
 
   const initData = ethers.utils.defaultAbiCoder.encode(
     ["address", "address", "bytes", "uint64", "uint256", "uint256", "uint256"],
@@ -61,17 +61,16 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
 
   const deployEvent = tx?.events?.[0];
   expect(deployEvent?.eventSignature).to.be.eq("LogDeploy(address,bytes,address)");
-  await deployments.save("LINKeCauldron", {
+  await deployments.save("BTCbCauldron", {
     abi: [],
     address: deployEvent?.args?.cloneAddress,
   });
-
-  console.log("LINKeCauldron", (await deployments.get("LINKeCauldron")).address);
+  console.log("BTCbCauldron", (await deployments.get("BTCbCauldron")).address);
 };
 
 export default deployFunction;
 
 setDeploymentSupportedChains(Object.keys(ParametersPerChain), deployFunction);
 
-deployFunction.tags = ["LINKeCauldron"];
+deployFunction.tags = ["BTCbCauldron"];
 deployFunction.dependencies = [];
