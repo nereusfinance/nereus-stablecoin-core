@@ -87,8 +87,7 @@ const config: HardhatUserConfig = {
     },
     avalanche: {
       chainId: 43114,
-      url: "http://localhost:8545",
-      // url: "https://api.avax.network/ext/bc/C/rpc",
+      url: "https://api.avax.network/ext/bc/C/rpc",
       accounts,
       gasPrice: 75 * 1e9,
       live: true,
