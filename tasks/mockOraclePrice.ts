@@ -9,7 +9,11 @@ task("mock-oracle-price", "Mock oracle price")
     console.log("updating...", deployment.address);
     await ethers.provider.send("hardhat_setCode", [deployment.address, artifact.deployedBytecode]);
 
-    const deploymentCauldron = await deployments.get(`${asset}Cauldron`);
+    const overriveCauldronPrefix = {
+      ETH: "WETH",
+    };
+
+    const deploymentCauldron = await deployments.get(`${overriveCauldronPrefix[asset] ? overriveCauldronPrefix[asset] : asset}Cauldron`);
     const cauldronFactory = await ethers.getContractFactory("CauldronV2");
     const contractCauldron = await cauldronFactory.attach(deploymentCauldron.address);
     await contractCauldron.updateExchangeRate();
