@@ -50,7 +50,7 @@ export enum ChainId {
 export const setDeploymentSupportedChains = (supportedChains: string[], deployFunction: DeployFunction) => {
   if (network.name !== "hardhat" || process.env.HARDHAT_LOCAL_NODE) {
     deployFunction.skip = ({ getChainId }) =>
-      new Promise(async (resolve, reject) => {
+      new Promise((resolve, reject) => {
         try {
           getChainId().then((chainId) => {
             resolve(supportedChains.indexOf(chainId.toString()) === -1);
