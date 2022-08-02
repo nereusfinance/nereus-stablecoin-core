@@ -2,7 +2,7 @@
   "name": "hardhat-project",
   "scripts": {
     "ganache-start": "node ganache-node",
-    "start": "hardhat node --hostname 0.0.0.0 --port 8545"
+    "start": "hardhat node --hostname 0.0.0.0 --port 8080"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
