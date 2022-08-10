@@ -1,4 +1,4 @@
-const { TokenSymbol } = require("./data/TokeSymbol");
+const { TokenSymbol } = require("./data/TokenSymbol");
 const { task } = require("hardhat/config");
 const usdcAbi = require("./abis/usdcAbi.json");
 const erc20Abi = require("./abis/erc20Abi.json");

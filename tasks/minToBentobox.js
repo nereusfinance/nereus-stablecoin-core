@@ -1,7 +1,7 @@
 const { task } = require("hardhat/config");
 const nxusdAbi = require("./abis/nxusdAbi.json");
 const degenBoxAbi = require("./abis/degenBoxAbi.json");
-const { TokenSymbol } = require("./data/TokeSymbol");
+const { TokenSymbol } = require("./data/TokenSymbol");
 
 const ownerAddress = "0xdD3dE3B819EDD3a014fDA93868d7Dfc873341467";
 const nxusdAddress = "0xf14f4ce569cb3679e99d5059909e23b07bd2f387";
