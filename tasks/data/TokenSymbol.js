@@ -8,6 +8,7 @@ const TokenSymbol = {
   LINKe: "LINKe",
   BTCb: "BTCb",
   JLPWAVAXUSDC: "JLPWAVAXUSDC",
+  WXT: "WXT",
 };
 
 module.exports = {

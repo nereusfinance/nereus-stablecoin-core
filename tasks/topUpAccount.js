@@ -4,10 +4,12 @@ const usdcAbi = require("./abis/usdcAbi.json");
 const erc20Abi = require("./abis/erc20Abi.json");
 const sAvaxAbi = require("./abis/sAvaxAbi.json");
 
-task("top-up-test-tokens", "Mint NXUSD to BentoBox for Cauldrons")
+task("top-up-test-tokens", "Top up test tokens")
   .addParam("user", "User address")
   .setAction(async ({ user: userAddress }, { ethers }) => {
-    await erc20TopUp(userAddress, "1000", TokenSymbol.NXUSD, ethers);
+    await erc20TopUp(userAddress, "1000000", TokenSymbol.WXT, ethers);
+    await erc20TopUp(userAddress, "100000", TokenSymbol.NXUSD, ethers);
+    await erc20TopUp(userAddress, "100", TokenSymbol.WETHe, ethers);
     await erc20TopUp(userAddress, "500", TokenSymbol.USDC, ethers);
     await erc20TopUp(userAddress, "500", TokenSymbol.av3CRV, ethers);
     await erc20TopUp(userAddress, "500", TokenSymbol.sAVAX, ethers);
@@ -69,6 +71,12 @@ const config = {
   [TokenSymbol.JLPWAVAXUSDC]: {
     tokenAddress: "0xf4003F4efBE8691B60249E6afbD307aBE7758adb",
     sourceAddress: "0xbecb0c28c4a9358e987c2916dc088df12374f036",
+    decimals: 18,
+    abi: erc20Abi,
+  },
+  [TokenSymbol.WXT]: {
+    tokenAddress: "0xfcDe4A87b8b6FA58326BB462882f1778158B02F1",
+    sourceAddress: "0xe195b82df6a797551eb1acd506e892531824af27",
     decimals: 18,
     abi: erc20Abi,
   },
