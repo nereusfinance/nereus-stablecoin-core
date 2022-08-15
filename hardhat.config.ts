@@ -34,12 +34,12 @@ const config: HardhatUserConfig = {
     sources: process.env.CONTRACTS_PATH || "contracts",
     tests: "test",
   },
-  etherscan: {
-    apiKey: {
-      avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
-      avalanche: process.env.SNOWTRACE_API_KEY,
-    },
-  },
+  // etherscan: {
+  //   apiKey: {
+  //     avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
+  //     avalanche: process.env.SNOWTRACE_API_KEY,
+  //   },
+  // },
   gasReporter: {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     currency: "USD",
