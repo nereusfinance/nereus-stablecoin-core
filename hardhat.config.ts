@@ -12,6 +12,7 @@ import "solidity-coverage";
 import "hardhat-deploy";
 import "./tasks";
 import "./tasks/mockOraclePrice";
+import "./tasks/setLiquidatorManager";
 
 import { HardhatUserConfig } from "hardhat/config";
 
