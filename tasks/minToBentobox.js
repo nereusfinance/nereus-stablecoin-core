@@ -53,9 +53,15 @@ const mintToBentoBox = async (cauldronAddress, amount, ethers) => {
     utils.formatEther(await cauldronBalance(cauldronAddress, ethers))
   );
 
-  await nusdContract
-    .connect(ownerSigner)
-    .mintToBentoBox(cauldronAddress, utils.parseEther(amount), degenBoxAddress);
+  await (
+    await nusdContract
+      .connect(ownerSigner)
+      .mintToBentoBox(
+        cauldronAddress,
+        utils.parseEther(amount),
+        degenBoxAddress
+      )
+  ).wait();
 
   console.log(
     `cauldron ${cauldronAddress} balance of NXUSD after`,

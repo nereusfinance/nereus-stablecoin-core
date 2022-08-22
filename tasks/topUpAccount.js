@@ -7,6 +7,8 @@ const sAvaxAbi = require("./abis/sAvaxAbi.json");
 task("top-up-test-tokens", "Mint NXUSD to BentoBox for Cauldrons")
   .addParam("user", "User address")
   .setAction(async ({ user: userAddress }, { ethers }) => {
+    await avaxTopUp(userAddress, "1000", ethers);
+    await erc20TopUp(userAddress, "1000", TokenSymbol.NXUSD, ethers);
     await erc20TopUp(userAddress, "1000", TokenSymbol.NXUSD, ethers);
     await erc20TopUp(userAddress, "500", TokenSymbol.USDC, ethers);
     await erc20TopUp(userAddress, "500", TokenSymbol.av3CRV, ethers);
@@ -68,10 +70,25 @@ const config = {
   },
   [TokenSymbol.JLPWAVAXUSDC]: {
     tokenAddress: "0xf4003F4efBE8691B60249E6afbD307aBE7758adb",
-    sourceAddress: "0xbecb0c28c4a9358e987c2916dc088df12374f036",
+    sourceAddress: "0x8a5658c67c5a28885e8dac103b3400b186025e93",
     decimals: 18,
     abi: erc20Abi,
   },
+};
+
+const avaxTopUp = async (address, amount, ethers) => {
+  console.log(
+    `AVAX address ${address} balance before`,
+    ethers.utils.formatEther(await ethers.provider.getBalance(address))
+  );
+  await ethers.provider.send("hardhat_setBalance", [
+    address,
+    ethers.utils.hexValue(ethers.utils.parseEther(amount)),
+  ]);
+  console.log(
+    `AVAX address ${address} balance after`,
+    ethers.utils.formatEther(await ethers.provider.getBalance(address))
+  );
 };
 
 const erc20TopUp = async (address, amount, symbol, ethers) => {
@@ -103,7 +120,9 @@ const erc20TopUp = async (address, amount, symbol, ethers) => {
     utils.formatUnits(await erc20Contract.balanceOf(address), decimals)
   );
 
-  await erc20Contract.transfer(address, utils.parseUnits(amount, decimals));
+  await (
+    await erc20Contract.transfer(address, utils.parseUnits(amount, decimals))
+  ).wait();
 
   console.log(
     `${symbol} address ${address} balance after`,
