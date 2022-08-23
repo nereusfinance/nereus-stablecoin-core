@@ -1,7 +1,11 @@
 const { task } = require("hardhat/config");
-const fs = require('fs')
+const fs = require("fs");
 
-task("accounts", "Prints the list of accounts", require("./accounts"))
+task("accounts", "Prints the list of accounts", require("./accounts"));
+require("./deployP1Markets");
+require("./deployP2Markets");
+require("./minToBentobox");
+require("./topUpAccount");
 
 function getSortedFiles(dependenciesGraph) {
   const tsort = require("tsort");
