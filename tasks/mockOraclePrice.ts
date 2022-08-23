@@ -11,7 +11,7 @@ task("mock-oracle-price", "Mock oracle price")
 
     const overrideCauldronPrefix = {
       ETH: "WETH",
-      BTC: "WBTC",
+      BTC: "BTCb",
     };
 
     const deploymentCauldron = await deployments.get(`${overrideCauldronPrefix[asset] ? overrideCauldronPrefix[asset] : asset}Cauldron`);
