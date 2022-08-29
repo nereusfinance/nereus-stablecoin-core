@@ -6,7 +6,9 @@ const TokenSymbol = {
   sAVAX: "sAVAX",
   JOE: "JOE",
   LINKe: "LINKe",
+  WBTC: "WBTC",
   BTCb: "BTCb",
+  WXT: "WXT",
   JLPWAVAXUSDC: "JLPWAVAXUSDC",
 };
 
