@@ -11,6 +11,8 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-deploy";
 import "./tasks";
+import "./tasks/mockOraclePrice";
+import "./tasks/setLiquidatorManager";
 
 import { HardhatUserConfig } from "hardhat/config";
 
@@ -65,6 +67,12 @@ const config: HardhatUserConfig = {
       saveDeployments: true,
       tags: ["local"],
     },
+    nereusdev1: {
+      url: process.env.NEREUS_DEV_RPC_URL1,
+    },
+    nereusdev2: {
+      url: process.env.NEREUS_DEV_RPC_URL2,
+    },
     hardhat: {
       chainId: 43114,
       // Seems to be a bug with this, even when false it complains about being unauthenticated.
@@ -87,7 +95,8 @@ const config: HardhatUserConfig = {
     },
     avalanche: {
       chainId: 43114,
-      url: "https://api.avax.network/ext/bc/C/rpc",
+      // url: `${process.env.TENDERLY_FORK_RPC}`,
+      url: `http://localhost:8545`,
       accounts,
       gasPrice: 75 * 1e9,
       live: true,

@@ -8,7 +8,7 @@ task("top-up-test-tokens", "Mint NXUSD to BentoBox for Cauldrons")
   .addParam("user", "User address")
   .setAction(async ({ user: userAddress }, { ethers }) => {
     await avaxTopUp(userAddress, "1000", ethers);
-    await erc20TopUp(userAddress, "1000", TokenSymbol.NXUSD, ethers);
+    await erc20TopUp(userAddress, "1000", TokenSymbol.WXT, ethers);
     await erc20TopUp(userAddress, "1000", TokenSymbol.NXUSD, ethers);
     await erc20TopUp(userAddress, "500", TokenSymbol.USDC, ethers);
     await erc20TopUp(userAddress, "500", TokenSymbol.av3CRV, ethers);
@@ -16,6 +16,7 @@ task("top-up-test-tokens", "Mint NXUSD to BentoBox for Cauldrons")
     await erc20TopUp(userAddress, "500", TokenSymbol.JOE, ethers);
     await erc20TopUp(userAddress, "500", TokenSymbol.LINKe, ethers);
     await erc20TopUp(userAddress, "5", TokenSymbol.BTCb, ethers);
+    await erc20TopUp(userAddress, "5", TokenSymbol.WBTC, ethers);
     await erc20TopUp(userAddress, "0.001", TokenSymbol.JLPWAVAXUSDC, ethers);
   });
 
@@ -68,9 +69,21 @@ const config = {
     decimals: 8,
     abi: erc20Abi,
   },
+  [TokenSymbol.WBTC]: {
+    tokenAddress: "0x50b7545627a5162F82A992c33b87aDc75187B218",
+    sourceAddress: "0xc09c12093b037866bf68c9474ecdb5113160fbce",
+    decimals: 8,
+    abi: erc20Abi,
+  },
   [TokenSymbol.JLPWAVAXUSDC]: {
     tokenAddress: "0xf4003F4efBE8691B60249E6afbD307aBE7758adb",
     sourceAddress: "0x8a5658c67c5a28885e8dac103b3400b186025e93",
+    decimals: 18,
+    abi: erc20Abi,
+  },
+  [TokenSymbol.WXT]: {
+    tokenAddress: "0xfcDe4A87b8b6FA58326BB462882f1778158B02F1",
+    sourceAddress: "0xe195b82df6a797551eb1acd506e892531824af27",
     decimals: 18,
     abi: erc20Abi,
   },
