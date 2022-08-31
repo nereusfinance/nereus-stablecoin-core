@@ -1,6 +1,7 @@
 const TokenSymbol = {
   NXUSD: "NXUSD",
   WETHe: "WETHe",
+  DAI: "DAI",
   USDC: "USDC",
   av3CRV: "av3CRV",
   sAVAX: "sAVAX",

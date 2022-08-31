@@ -9,6 +9,8 @@ task("top-up-test-tokens", "Mint NXUSD to BentoBox for Cauldrons")
   .setAction(async ({ user: userAddress }, { ethers }) => {
     await avaxTopUp(userAddress, "1000", ethers);
     await erc20TopUp(userAddress, "1000", TokenSymbol.WXT, ethers);
+    await erc20TopUp(userAddress, "100", TokenSymbol.WETHe, ethers);
+    await erc20TopUp(userAddress, "1000", TokenSymbol.DAI, ethers);
     await erc20TopUp(userAddress, "1000", TokenSymbol.NXUSD, ethers);
     await erc20TopUp(userAddress, "500", TokenSymbol.USDC, ethers);
     await erc20TopUp(userAddress, "500", TokenSymbol.av3CRV, ethers);
@@ -60,6 +62,12 @@ const config = {
   [TokenSymbol.WETHe]: {
     tokenAddress: "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB",
     sourceAddress: "0x53f7c5869a859f0aec3d334ee8b4cf01e3492f21",
+    decimals: 18,
+    abi: erc20Abi,
+  },
+  [TokenSymbol.DAI]: {
+    tokenAddress: "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70",
+    sourceAddress: "0x47afa96cdc9fab46904a55a6ad4bf6660b53c38a",
     decimals: 18,
     abi: erc20Abi,
   },
