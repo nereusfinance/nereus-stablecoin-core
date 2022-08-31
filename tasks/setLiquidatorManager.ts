@@ -25,3 +25,25 @@ task("set-liquidator-manager", "set liquidator manager")
     }
     await ethers.provider.send("hardhat_stopImpersonatingAccount", [LiquidatorOwnerAddress]);
   });
+
+task("remove-liquidator-manager", "remove liquidator manager")
+  .addParam("manager", "Manager's address to be removed")
+  .setAction(async ({ manager: managerAddress }, { ethers }) => {
+    await ethers.provider.send("hardhat_impersonateAccount", [LiquidatorOwnerAddress]);
+    const ownerSigner = await ethers.provider.getSigner(LiquidatorOwnerAddress);
+    await ethers.provider.send("hardhat_setBalance", [LiquidatorOwnerAddress, ethers.utils.hexValue(ethers.utils.parseEther("100"))]);
+    const liquidator = await ethers.getContractAt(LiquidatorAbi, LiquidatorAddress, ownerSigner);
+
+    const isManager = await liquidator.managers(managerAddress);
+
+    if (isManager) {
+      console.log(`removing manager ${managerAddress}`);
+      await liquidator.removeManager(managerAddress);
+      const isManager = await liquidator.managers(managerAddress);
+
+      console.log(`${managerAddress} isManager ${Boolean(isManager)}`);
+    } else {
+      console.log(`${managerAddress} is not a manager, nothing to update`);
+    }
+    await ethers.provider.send("hardhat_stopImpersonatingAccount", [LiquidatorOwnerAddress]);
+  });
