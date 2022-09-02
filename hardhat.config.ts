@@ -73,6 +73,9 @@ const config: HardhatUserConfig = {
     nereusdev2: {
       url: process.env.NEREUS_DEV_RPC_URL2 || "",
     },
+    nereusdev3: {
+      url: process.env.NEREUS_DEV_RPC_URL3 || "",
+    },
     hardhat: {
       chainId: 43114,
       // Seems to be a bug with this, even when false it complains about being unauthenticated.
