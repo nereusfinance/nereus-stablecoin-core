@@ -11,7 +11,7 @@ const ParametersPerChain = {
     owner: LothricFin,
     degenBox: "0x0B1F9C2211F77Ec3Fa2719671c5646cf6e59B775",
     collateral: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E",
-    oracle: "0x3d6fd3FB5c33d44A1EE362f8701FCcd02739e1Da",
+    oracle: "0x9d6eC3D371431a8491dB0BB7e6eD60e3f9306d4d",
     oracleData: "0x0000000000000000000000000000000000000000",
     masterContract: "0xE767C6C3Bf42f550A5A258A379713322B6c4c060",
   },
