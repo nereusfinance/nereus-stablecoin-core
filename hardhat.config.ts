@@ -11,6 +11,8 @@ import "hardhat-gas-reporter";
 import "solidity-coverage";
 import "hardhat-deploy";
 import "./tasks";
+import "./tasks/mockOraclePrice";
+import "./tasks/setLiquidatorManager";
 
 import { HardhatUserConfig } from "hardhat/config";
 
@@ -34,12 +36,12 @@ const config: HardhatUserConfig = {
     sources: process.env.CONTRACTS_PATH || "contracts",
     tests: "test",
   },
-  etherscan: {
-    apiKey: {
-      avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
-      avalanche: process.env.SNOWTRACE_API_KEY,
-    },
-  },
+  // etherscan: {
+  //   apiKey: {
+  //     avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
+  //     avalanche: process.env.SNOWTRACE_API_KEY,
+  //   },
+  // },
   gasReporter: {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     currency: "USD",
@@ -64,6 +66,15 @@ const config: HardhatUserConfig = {
       live: false,
       saveDeployments: true,
       tags: ["local"],
+    },
+    nereusdev1: {
+      url: process.env.NEREUS_DEV_RPC_URL1 || "",
+    },
+    nereusdev2: {
+      url: process.env.NEREUS_DEV_RPC_URL2 || "",
+    },
+    nereusdev3: {
+      url: process.env.NEREUS_DEV_RPC_URL3 || "",
     },
     hardhat: {
       chainId: 43114,
