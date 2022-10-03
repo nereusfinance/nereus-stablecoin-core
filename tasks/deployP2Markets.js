@@ -1,10 +1,8 @@
-const { task } = require("hardhat/config");
+const { task } = require("hardhat/config")
 
-task("deploy-p2-markets", "Deploy BTCb, JLPWAVAXUSDC markets").setAction(
-  async (args, { run }) => {
-    await run("deploy", { tags: "JLPWAVAXUSDCOracle" });
+task("deploy-p2-markets", "Deploy BTCb, JLPWAVAXUSDC markets").setAction(async (args, { run }) => {
+  await run("deploy", { tags: "JLPWAVAXUSDCOracle" })
 
-    await run("deploy", { tags: "BTCbCauldron" });
-    await run("deploy", { tags: "JLPWAVAXUSDCCauldron" });
-  }
-);
+  await run("deploy", { tags: "BTCbCauldron" })
+  await run("deploy", { tags: "JLPWAVAXUSDCCauldron" })
+})
