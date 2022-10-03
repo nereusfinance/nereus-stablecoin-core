@@ -43,7 +43,7 @@ const config = {
   },
   [TokenSymbol.JOE]: {
     tokenAddress: "0x6e84a6216eA6dACC71eE8E6b0a5B7322EEbC0fDd",
-    sourceAddress: "0x279f8940ca2a44c35ca3edf7d28945254d0f0ae6",
+    sourceAddress: "0x799d4C5E577cF80221A076064a2054430D2af5cD",
     decimals: 18,
     abi: erc20Abi,
   },
