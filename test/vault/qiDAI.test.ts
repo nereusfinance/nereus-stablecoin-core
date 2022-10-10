@@ -412,7 +412,7 @@ describe("qiDAI", () => {
       )
       const exchangeRate = await qiDAIVOracle.callStatic.peekSpot("0x")
       const exchangeRateExpected = ethers.BigNumber.from("21010594724690780")
-      expect(exchangeRate).to.be.closeTo(exchangeRateExpected, 1e8)
+      expect(exchangeRate).to.be.closeTo(exchangeRateExpected, 1e9)
 
       const qiUnderlying = await ethers.getContractAt<IERC20Metadata>(
         "IERC20Metadata",
@@ -443,7 +443,7 @@ describe("qiDAI", () => {
       )
       const exchangeRate = await qiDAIVOracle.callStatic.peekSpot("0x")
       const exchangeRateExpected = ethers.BigNumber.from("21010594724690780")
-      expect(exchangeRate).to.be.closeTo(exchangeRateExpected, 1e8)
+      expect(exchangeRate).to.be.closeTo(exchangeRateExpected, 1e9)
 
       const qiUnderlying = await ethers.getContractAt<IERC20Metadata>(
         "IERC20Metadata",

@@ -11,8 +11,6 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   console.log(`upgrading VaultRewardSwapperProxy`, swapperProxy.address)
   const swapperFactoryV2 = await ethers.getContractFactory("VaultRewardSwapperV2Mock")
   await upgrades.upgradeProxy(swapperProxy.address, swapperFactoryV2, { kind: "transparent" })
-  console.log("Box upgraded")
-
   console.log(`upgraded VaultRewardSwapperProxy`, swapperProxy.address)
 }
 

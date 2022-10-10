@@ -218,6 +218,33 @@ describe("aAvaUSDT", () => {
       )
   })
 
+  it("should deposit aAvaUSDT to mint shares and redeem shares without compound", async () => {
+    const { aAvaUSDT, aAvaUSDTVault, rewardsSwapper, signers, user1 } = await createTestEnv()
+    const depositAmount = ethers.utils.parseUnits("10000", await aAvaUSDT.decimals())
+    const sharesAmount = ethers.utils.parseUnits("10000", await aAvaUSDTVault.decimals())
+
+    await aAvaUSDT.connect(signers.user1).approve(aAvaUSDTVault.address, depositAmount)
+
+    expect(await aAvaUSDTVault.totalAssets()).to.eq(0)
+
+    expect(await aAvaUSDTVault.connect(signers.user1).deposit(depositAmount, user1))
+      .to.emit(aAvaUSDT, "Transfer")
+      .withArgs(user1, aAvaUSDTVault.address, depositAmount)
+      .to.emit(aAvaUSDTVault, "Transfer")
+      .withArgs(ethers.constants.AddressZero, user1, sharesAmount)
+
+    // increase blockchain timestamp to bypass compound idle period and to reach min swap amount
+    const days1 = 60 * 60 * 24
+    await increase(days1)
+
+    expect(await aAvaUSDTVault.totalAssets()).to.be.gt(depositAmount)
+    expect(await aAvaUSDTVault.balanceOf(user1)).to.eq(sharesAmount)
+
+    await expect(
+      aAvaUSDTVault.connect(signers.user1).redeemWithoutCompound(sharesAmount, user1, user1)
+    ).to.not.emit(rewardsSwapper, "Swap")
+  })
+
   it("should deposit aAvaUSDT with permit and mint shares", async () => {
     const { aAvaUSDT, aAvaUSDTVault, signers, user1 } = await createTestEnv()
     const depositAmount = ethers.utils.parseUnits("1000", await aAvaUSDT.decimals())

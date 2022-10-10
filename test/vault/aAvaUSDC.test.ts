@@ -2,7 +2,6 @@ import { expect } from "chai"
 import hre, { deployments, ethers, getNamedAccounts, network, run } from "hardhat"
 import {
   CauldronV2,
-  NXUSD,
   TokenizedVaultOracle,
   TokenizedVaultV1,
   VaultRewardSwapperV1,
