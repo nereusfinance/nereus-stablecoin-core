@@ -6,6 +6,10 @@ import "@openzeppelin/contracts/interfaces/IERC20Metadata.sol";
 import "../interfaces/IOracle.sol";
 import "./interfaces/IAggregatorV3Interface.sol";
 
+/**
+ * @title TokenizedVaultOracle contract
+ * @notice Calculates Vault shares rate to USD based on Chainlink price feed and Vault supply
+ **/
 contract TokenizedVaultOracle is IOracle {
 
     IAggregatorV3Interface public immutable priceFeed;

@@ -14,6 +14,11 @@ interface IOracle {
     function name(bytes calldata data) external view returns (string memory);
 }
 
+/**
+ * @title TokenizedVaultCompOracle contract
+ * @notice Calculates Vault shares rate to USD for compound-like tokens (e.g. qiToken)
+ * based on Chainlink price feed and exchangeRate
+ **/
 contract TokenizedVaultCompOracle is IOracle {
 
     IAggregatorV3Interface public immutable priceFeed;

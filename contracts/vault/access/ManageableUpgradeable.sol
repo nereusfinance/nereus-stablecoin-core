@@ -3,6 +3,10 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
+/**
+ * @title ManageableUpgradeable contract
+ * @notice The contract implements additional Manager role
+ **/
 contract ManageableUpgradeable is OwnableUpgradeable {
     mapping(address => bool) public managers;
 

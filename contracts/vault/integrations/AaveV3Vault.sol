@@ -4,9 +4,15 @@ pragma solidity ^0.8.6;
 import "../TokenizedVaultV1.sol";
 import {IAaveRewardControllerV3} from "../interfaces/IAaveRewardController.sol";
 
+/**
+ * @title AaveV3Vault contract
+ * @notice The contract implements TokenizedVaultV1 and defines claim logic of aToken rewards
+ **/
 contract AaveV3Vault is TokenizedVaultV1 {
+    /// @notice The reward controller which should be called to claim rewards
     IAaveRewardControllerV3 public rewardController;
 
+    /// @notice The assets to accumulate rewards for
     address[] internal _assets;
 
     constructor(
@@ -26,6 +32,7 @@ contract AaveV3Vault is TokenizedVaultV1 {
         _assets[0] = asset();
     }
 
+    /// @notice Claim aToken rewards
     function _claimRewards() internal virtual override {
         rewardController.claimAllRewardsToSelf(_assets);
     }

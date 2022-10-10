@@ -7,28 +7,36 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/draft-IERC20Permit.sol";
 import "@openzeppelin/contracts/interfaces/IERC4626.sol";
-import "@openzeppelin/contracts/utils/math/Math.sol";
 
 import "./interfaces/IVaultRewardSwapperV1.sol";
 import "./interfaces/IWrapToken.sol";
 
 /**
  * @title TokenizedVault contract
- * @notice The
+ * @notice The Vault implements ERC4626 and includes compound of reward assets,
+ * it allows to distribute rewards between share holders and to use Vault shares as collateral to borrow NXUSD
  **/
 abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
-    using Math for uint256;
 
+    /// @notice Emitted when RewardsSwapper proxy changed by owner
     event RewardSwapperSet(address swapper);
+    /// @notice Emitted when reward asset asset added by owner
     event RewardAssetAdded(address rewardAsset);
+    /// @notice Emitted when reward asset asset removed by owner
     event RewardAssetRemoved(address rewardAsset);
 
+    /// @notice Timestamp of the latest compound
     uint256 public lastCompound;
+    /// @notice Seconds between compounds to reduce gas costs
     uint256 public idleBetweenCompounds;
 
+    /// @notice BentoBox address is approved as spender by default
     address public immutable bentoBox;
+    /// @notice List of reward assets which should be claimed
     address[] public rewardAssets;
+    /// @notice Swapper proxy contract is responsible to swap from reward asset to Vault asset
     IVaultRewardSwapperV1 public swapper;
+    /// @notice ERC20 contract to wrap native asset into ERC20 token (e.g. AVAX to WAVAX)
     address public immutable wrapAsset;
 
     constructor(
@@ -51,12 +59,15 @@ abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
         }
     }
 
+    /// @notice The logic to claim rewards should be implemented in child contracts
     function _claimRewards() internal virtual;
 
+    /// @param idleBetweenCompounds_ seconds to wait between compounds
     function setIdleBetweenCompounds(uint256 idleBetweenCompounds_) public onlyOwner {
         idleBetweenCompounds = idleBetweenCompounds_;
     }
 
+    /// @param swapper_ swapper proxy address
     function setSwapper(address swapper_) public onlyOwner {
         swapper = IVaultRewardSwapperV1(swapper_);
         emit RewardSwapperSet(swapper_);
@@ -75,10 +86,12 @@ abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
         emit RewardAssetRemoved(rewardAsset);
     }
 
+    /// @notice Compound logic can be called separately at any time
     function compound() public nonReentrant {
         _compound();
     }
 
+    /// @notice Compound functionality includes rewards claim and swap them to Vault underlying asset
     function _compound() internal {
         if (block.timestamp < lastCompound + idleBetweenCompounds) {
             return;
@@ -109,6 +122,7 @@ abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
         }
     }
 
+    /// @notice Extends IERC4626.transferFrom with default approval for BentoBox
     function transferFrom(
         address from,
         address to,
@@ -124,10 +138,12 @@ abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
         return true;
     }
 
+    /// @notice See _depositWithPermit
     function deposit(uint256 assets, address receiver) public virtual override nonReentrant returns (uint256) {
         return _depositWithCompound(assets, receiver);
     }
 
+    /// @notice Allows to apply ERC2612 and perform deposit into Vault with one transaction instead of approve + deposit
     function depositWithPermit(
         uint256 assets,
         address receiver,
@@ -140,6 +156,7 @@ abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
         return _depositWithCompound(assets, receiver);
     }
 
+    /// @notice Extends IERC4626.deposit with compound logic
     function _depositWithCompound(uint256 assets, address receiver) internal returns (uint256) {
         require(assets <= maxDeposit(receiver), "ERC4626: deposit more than max");
 
@@ -151,6 +168,7 @@ abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
         return shares;
     }
 
+    /// @notice Extends IERC4626.mint with compound logic
     function mint(uint256 shares, address receiver) public virtual override nonReentrant returns (uint256) {
         require(shares <= maxMint(receiver), "ERC4626: mint more than max");
 
@@ -162,7 +180,7 @@ abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
         return assets;
     }
 
-    /** @dev See {IERC4626-withdraw}. */
+    /// @notice Extends IERC4626.withdraw with compound logic
     function withdraw(
         uint256 assets,
         address receiver,
@@ -178,7 +196,7 @@ abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
         return shares;
     }
 
-    /** @dev See {IERC4626-redeem}. */
+    /// @notice Extends IERC4626.redeem with compound logic
     function redeem(
         uint256 shares,
         address receiver,
@@ -194,6 +212,7 @@ abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
         return assets;
     }
 
+    /// @notice IERC4626.redeem call can be used as emergency withdrawal without compound
     function redeemWithoutCompound(
         uint256 shares,
         address receiver,
@@ -202,10 +221,12 @@ abstract contract TokenizedVaultV1 is ERC4626, Ownable, ReentrancyGuard {
         return ERC4626.redeem(shares, receiver, owner);
     }
 
+    /// @notice Allows to receive rewards in native asset
     fallback() external payable {
         return;
     }
 
+    /// @notice Allows to receive rewards in native asset
     receive() external payable {
         return;
     }

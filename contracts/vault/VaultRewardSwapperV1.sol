@@ -12,9 +12,14 @@ import "./interfaces/IJoeFactory.sol";
 import "./interfaces/ICERC20.sol";
 import "./interfaces/IWrapToken.sol";
 
+/**
+ * @title VaultRewardSwapperV1 contract
+ * @notice The Swapper contract is upgradeable(ERC1967) contract and implements required actions to swap rewards
+ * from reward asset to Vault underlying asset
+ **/
 contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRewardSwapperV1  {
 
-    // actionType:
+    // @notice actionType:
     // 1 = joe swap
     // 2 = aaveV3 supply
     // 3 = cToken mint
@@ -24,15 +29,22 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         address tokenOut;
     }
 
+    /// @notice Emitted when successful Swap performed
     event Swap(address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOut, address caller);
+    /// @notice Emitted when route set by owner
     event RouteSet(address tokenIn, address tokenOut, SwapAction[] actions);
+    /// @notice Emitted when min amount to start swap actions is set by owner
     event RouteMinAmountSet(address tokenIn, uint256 minAmount);
+    /// @notice Emitted Joe Factor contract is set
     event JoeFactorySet(address joeFactory);
+    /// @notice Emitted AAVELendingPoolV3 contract is set
     event AaveLendingPoolV3Set(address aaveLendingPoolV3);
 
+    /// @notice Thrown when swap is called with unsupported action type
     error SwapActionNotSupported();
 
-    // example: routes[startToken][endToken] = SwapAction[]
+    /// @notice The route config includes list of required swap actions to perform
+    /// example: routes[startToken][endToken] = SwapAction[]
     mapping(address => mapping(address => SwapAction[])) public routes;
     mapping(address => uint256) public routeMinAmount;
 
@@ -48,6 +60,9 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         __Ownable_init();
     }
 
+    /// @notice The swap can be called only by Vault
+    /// @param tokenIn_ The reward asset or wrapped asset
+    /// @param tokenOut_ The Vault underlying asset
     function swap(address tokenIn_, address tokenOut_) public onlyManager {
         address recipient = _msgSender();
         uint256 amountIn = IERC20(tokenIn_).balanceOf(address(this));
@@ -80,6 +95,10 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         emit Swap(tokenIn_, tokenOut_, amountIn, amountOutEnd, _msgSender());
     }
 
+    /// @param tokenIn The reward asset or wrapped asset
+    /// @param tokenOut The Vault underlying asset
+    /// @param amount Rewards amount to swap
+    /// @return boolean The swap is allowed if route is set and amount greater than min amount
     function canSwap(
         address tokenIn,
         address tokenOut,
@@ -89,6 +108,10 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         return actions.length > 0 && amount > routeMinAmount[tokenIn];
     }
 
+    /// @notice The route configuration can be called only by owner
+    /// @param tokenIn The reward asset or wrapped asset
+    /// @param tokenOut The Vault underlying asset
+    /// @param actions The list of required swap actions
     function setRoute(
         address tokenIn,
         address tokenOut,
@@ -105,6 +128,9 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         emit RouteSet(tokenIn, tokenOut, actions);
     }
 
+    /// @notice The minimum amount requirements can be called only by owner
+    /// @param tokenIn The reward asset or wrapped asset
+    /// @param minAmount The minimum rewards amount to start swap actions
     function setMinAmount(
         address tokenIn,
         uint256 minAmount
@@ -113,6 +139,9 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         emit RouteMinAmountSet(tokenIn, minAmount);
     }
 
+    /// @param tokenIn The reward asset or wrapped asset
+    /// @param tokenOut The Vault underlying asset
+    /// @return The list of swap actions
     function getRoute(
         address tokenIn,
         address tokenOut
@@ -120,16 +149,24 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         return routes[tokenIn][tokenOut];
     }
 
+    /// @notice Set AaveLendingPoolV3 contract, required in supply actions, e.g. to get aAvaUSDT from USDT
     function setAaveLendingPoolV3(address aaveLendingPoolV3_) external onlyOwner {
         aaveLendingPoolV3 = IAAVEV3(aaveLendingPoolV3_);
         emit AaveLendingPoolV3Set(aaveLendingPoolV3_);
     }
 
+    /// @notice Set JoeFactory contract, it's used to retrieve JoePair address
     function setJoeFactory(address joeFactory_) external onlyOwner {
         joeFactory = IJoeFactory(joeFactory_);
         emit JoeFactorySet(joeFactory_);
     }
 
+    /// @notice Set allowance to spend contract tokens by AaveLendingPoolV3 or qiTokens contracts
+    /// it's required in _aaveV3Supply and _cMint actions and it's set beforehand to reduce gas costs
+    /// can be called by owner
+    /// @param token The token to spend
+    /// @param spender AaveLendingPoolV3 or qiTokens contracts
+    /// @param amount The amount to approve
     function setAllowance(
         address token,
         address spender,
@@ -138,6 +175,10 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         SafeERC20Upgradeable.safeApprove(IERC20Upgradeable(token), spender, amount);
     }
 
+    /// @notice Swap tokens using JoePair
+    /// @param action The swap action {tokenIn, tokenOut}
+    /// @param amountIn The amount of tokenIn
+    /// @param recipient The recipient of tokenOut, can be Vault contract or Swapper contract itself if it's not final action
     function _swapJoePair(
         SwapAction memory action,
         uint256 amountIn,
@@ -161,7 +202,7 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         return amount0Out != 0 ? amount0Out : amount1Out;
     }
 
-    // source: UniswapV2Library.getAmountOut
+    // @notice source UniswapV2Library.getAmountOut
     // given an input amount of an asset and pair reserves, returns the maximum output amount of the other asset
     function _getAmountOut(
         uint256 amountIn,
@@ -179,11 +220,13 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         amountOut = numerator / denominator;
     }
 
+    /// @notice Supply tokens to get aToken
     function _aaveV3Supply(SwapAction storage action, uint256 amount) internal returns (uint256) {
         aaveLendingPoolV3.supply(action.tokenIn, amount, _msgSender(), 0);
         return 0;
     }
 
+    /// @notice Mint tokens to get compound like tokens (e.g. qiToken)
     function _cMint(SwapAction storage action, uint256 amount) internal returns (uint256) {
         ICERC20(action.tokenOut).mint(amount);
         SafeERC20Upgradeable.safeTransfer(IERC20Upgradeable(action.tokenOut), _msgSender(), IERC20(action.tokenOut).balanceOf(address(this)));
