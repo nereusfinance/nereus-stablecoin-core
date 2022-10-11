@@ -7,7 +7,6 @@ import qiTokenAbi from "./abis/qiTokenAbi.json"
 import benQiAbi from "./abis/benQiAbi.json"
 import nxusdAbi from "./abis/nxusdAbi.json"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
-import { IERC20Metadata } from "../typechain"
 import { Contract } from "ethers"
 
 export enum TokenSymbol {
@@ -189,7 +188,7 @@ export const getTokenData = (chainId: unknown, symbol: TokenSymbol) => {
   return token
 }
 
-export async function getTokenContract<T extends Contract = IERC20Metadata>(
+export async function getTokenContract<T extends Contract>(
   chainId: unknown,
   symbol: TokenSymbol,
   { ethers }: HardhatRuntimeEnvironment
