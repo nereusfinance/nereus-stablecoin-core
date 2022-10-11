@@ -26,7 +26,6 @@ contract TokenizedVaultCompOracle is IOracle {
     IERC4626 public immutable vault;
     uint256 public immutable vaultDecimals;
     uint256 public immutable vaultAssetDecimals;
-    uint256 public immutable cExchangeRateDecimals;
     uint256 public immutable rateDividend;
 
     string private _name;
@@ -41,10 +40,10 @@ contract TokenizedVaultCompOracle is IOracle {
         IERC20Metadata vaultAsset = IERC20Metadata(vault.asset());
         vaultDecimals = IERC20Metadata(vault).decimals();
         vaultAssetDecimals = vaultAsset.decimals();
-        address  cUnderlying = ICERC20(vault.asset()).underlying();
+        address cUnderlying = ICERC20(vault.asset()).underlying();
         uint256 cUnderlyingDecimals = IERC20Metadata(cUnderlying).decimals();
-        rateDividend = 10**(vaultAssetDecimals + priceFeed.decimals() + vaultDecimals);
-        cExchangeRateDecimals = cUnderlyingDecimals + 18 - vaultAssetDecimals;
+        uint256 cExchangeRateDecimals = cUnderlyingDecimals + 18 - vaultAssetDecimals;
+        rateDividend = 10**(vaultAssetDecimals + priceFeed.decimals() + vaultDecimals - cExchangeRateDecimals);
     }
 
     // Calculates the latest exchange rate
@@ -60,10 +59,10 @@ contract TokenizedVaultCompOracle is IOracle {
         uint256 cExchangeRate = ICERC20(vault.asset()).exchangeRateCurrent();
 
         uint256 price = vaultTotalSupply == 0
-            ? 10**(vaultAssetDecimals + cExchangeRateDecimals) * uint256(answer) / cExchangeRate
-            : (vault.totalAssets() * uint256(answer) * 10**(vaultDecimals + cExchangeRateDecimals)) / cExchangeRate / vaultTotalSupply;
+            ? 10**vaultAssetDecimals * uint256(answer)
+            : (vault.totalAssets() * uint256(answer) * 10**vaultDecimals) / vaultTotalSupply;
 
-        return rateDividend / price;
+        return rateDividend * cExchangeRate / price;
     }
 
     // Get the latest exchange rate
