@@ -23,6 +23,7 @@ if (process.env.SKIP_LOAD !== "true") {
   import("./tasks/deployP3Markets")
   import("./tasks/minToBentobox")
   import("./tasks/printP3Deployments")
+  import("./tasks/permitSignature")
 }
 
 const accounts = {
