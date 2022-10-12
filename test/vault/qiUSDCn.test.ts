@@ -27,7 +27,7 @@ type FixtureType = (options?: any) => Promise<{
   qiUSDCnVault: TokenizedVaultV1
   qiUSDCnVOracle: TokenizedVaultCompOracle
 
-  USDC: IERC20Metadata
+  USDC: Contract
   qiUSDCn: Contract
   BenQi: Contract
   WAVAX: Contract

@@ -61,9 +61,9 @@ describe("VaultRewardsSwapper", () => {
       )
       await run("configure-vault-swapper-p3", { swapper: rewardsSwapper.address })
 
-      const usdt = await getTokenContract(chainId, TokenSymbol.USDt, hre)
-      const aAvaUSDT = await getTokenContract(chainId, TokenSymbol.aAvaUSDT, hre)
-      const wavax = await getTokenContract(chainId, TokenSymbol.WAVAX, hre)
+      const usdt = await getTokenContract<IERC20>(chainId, TokenSymbol.USDt, hre)
+      const aAvaUSDT = await getTokenContract<IERC20>(chainId, TokenSymbol.aAvaUSDT, hre)
+      const wavax = await getTokenContract<IERC20>(chainId, TokenSymbol.WAVAX, hre)
 
       await erc20TopUp(user1, "500", TokenSymbol.WAVAX, { ethers })
       await erc20TopUp(user1, "20000", TokenSymbol.aAvaUSDT, { ethers })

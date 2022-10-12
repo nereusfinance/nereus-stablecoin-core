@@ -8,7 +8,7 @@ task("permit-signature", "Sign permit message")
   .addParam("amount", "Deposit amount")
   .addParam("token", "The aToken address you want to spend")
   .addParam("vault", "The spender's address - Vault contract")
-  .addOptionalParam("deadline", "Seconds")
+  .addOptionalParam("deadline", "Seconds when signature expires")
   .setAction(async ({ user, amount, token, vault, deadline = 60 }, hre) => {
     const aToken = await hre.ethers.getContractAt(aTokenAbi, token)
     const deadlineTime = Math.trunc(Date.now() / 1000) + Number(deadline) //seconds

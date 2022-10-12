@@ -28,7 +28,7 @@ type FixtureType = (options?: any) => Promise<{
   qiDAIVOracle: TokenizedVaultCompOracle
   rewardsSwapper: VaultRewardSwapperV1
 
-  DAIe: IERC20Metadata
+  DAIe: Contract
   qiDAI: Contract
   BenQi: Contract
   WAVAX: Contract
