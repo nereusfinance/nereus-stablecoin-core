@@ -213,8 +213,8 @@ describe("qiUSDCn", () => {
       const qiUSDCnAddress = "0xB715808a78F6041E46d61Cb123C9B4A27056AE9C"
       expect(await qiUSDCnVault.asset()).to.eq(qiUSDCnAddress)
       expect(await qiUSDCnVault.decimals()).to.eq(18)
-      expect(await qiUSDCnVault.name()).to.eq("qiUSDCnVault")
-      expect(await qiUSDCnVault.symbol()).to.eq("qiUSDCnV")
+      expect(await qiUSDCnVault.name()).to.eq("Nereus Benqi USDCn Vault")
+      expect(await qiUSDCnVault.symbol()).to.eq("NqiUSDCn")
     })
 
     it("should verify qiUSDCnVCauldron deployment", async () => {
@@ -370,8 +370,8 @@ describe("qiUSDCn", () => {
     it("should verify oracle deployment", async () => {
       const { qiUSDCnVOracle, qiUSDCnVault } = await createTestEnv()
 
-      expect(await qiUSDCnVOracle.name("0x")).to.eq("qiUSDCnVault Chainlink")
-      expect(await qiUSDCnVOracle.symbol("0x")).to.eq("qiUSDCnV/USD")
+      expect(await qiUSDCnVOracle.name("0x")).to.eq("NqiUSDCn Chainlink")
+      expect(await qiUSDCnVOracle.symbol("0x")).to.eq("NqiUSDCn/USD")
       expect(await qiUSDCnVOracle.priceFeed()).to.eq("0xF096872672F44d6EBA71458D74fe67F9a77a23B9") //USDC ChainLink
       expect(await qiUSDCnVOracle.vault()).to.eq(qiUSDCnVault.address)
     })

@@ -18,8 +18,8 @@ const ParametersPerChain: {
 } = {
   [ChainId.Avalanche]: {
     asset: "0xB715808a78F6041E46d61Cb123C9B4A27056AE9C", //qiUSDCn
-    name: vaultName,
-    symbol: "qiUSDCnV",
+    name: "Nereus Benqi USDCn Vault",
+    symbol: "NqiUSDCn",
     idleBetweenCompoundsSeconds: 60 * 60 * 12, // 12 hours
     wrapAsset: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
     bentoBox: "0x0B1F9C2211F77Ec3Fa2719671c5646cf6e59B775",

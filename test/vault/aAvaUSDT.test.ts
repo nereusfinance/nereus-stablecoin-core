@@ -158,8 +158,8 @@ describe("aAvaUSDT", () => {
     const aAvaUSDTAddress = "0x6ab707Aca953eDAeFBc4fD23bA73294241490620"
     expect(await aAvaUSDTVault.asset()).to.eq(aAvaUSDTAddress)
     expect(await aAvaUSDTVault.decimals()).to.eq(18)
-    expect(await aAvaUSDTVault.name()).to.eq("aAvaUSDTVault")
-    expect(await aAvaUSDTVault.symbol()).to.eq("aAvaUSDTV")
+    expect(await aAvaUSDTVault.name()).to.eq("Nereus Aave Avalanche USDT Vault")
+    expect(await aAvaUSDTVault.symbol()).to.eq("NaAvaUSDT")
 
     const wavaxAddress = await aAvaUSDTVault.rewardAssets(0)
     expect(wavaxAddress).to.eq(
@@ -571,8 +571,8 @@ describe("aAvaUSDT", () => {
     it("should verify oracle deployment", async () => {
       const { aAvaUSDTVOracle, aAvaUSDTVault } = await createTestEnv()
 
-      expect(await aAvaUSDTVOracle.name("0x")).to.eq("aAvaUSDTVault Chainlink")
-      expect(await aAvaUSDTVOracle.symbol("0x")).to.eq("aAvaUSDTV/USD")
+      expect(await aAvaUSDTVOracle.name("0x")).to.eq("NaAvaUSDT Chainlink")
+      expect(await aAvaUSDTVOracle.symbol("0x")).to.eq("NaAvaUSDT/USD")
       expect(await aAvaUSDTVOracle.priceFeed()).to.eq("0xEBE676ee90Fe1112671f19b6B7459bC678B67e8a") //USDT ChainLink
       expect(await aAvaUSDTVOracle.vault()).to.eq(aAvaUSDTVault.address)
     })

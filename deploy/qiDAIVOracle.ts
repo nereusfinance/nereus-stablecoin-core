@@ -12,8 +12,8 @@ const ParametersPerChain: {
   }
 } = {
   [ChainId.Avalanche]: {
-    name: "qiDAIVault Chainlink",
-    symbol: "qiDAIV/USD",
+    name: "NqiDAI Chainlink",
+    symbol: "NqiDAI/USD",
     priceFeed: "0x51d7180eda2260cc4f6e4eebb82fef5c3c2b8300", //DAI ChainLink
   },
 }

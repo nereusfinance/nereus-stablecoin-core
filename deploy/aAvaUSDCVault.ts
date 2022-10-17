@@ -17,8 +17,8 @@ const ParametersPerChain: {
 } = {
   [ChainId.Avalanche]: {
     asset: "0x625E7708f30cA75bfd92586e17077590C60eb4cD", //aAvaUSDC
-    name: vaultName,
-    symbol: "aAvaUSDCV",
+    name: "Nereus Aave Avalanche USDC Vault",
+    symbol: "NaAvaUSDC",
     idleBetweenCompoundsSeconds: 60 * 60 * 12, // 12 hours
     wrapAsset: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
     bentoBox: "0x0B1F9C2211F77Ec3Fa2719671c5646cf6e59B775",

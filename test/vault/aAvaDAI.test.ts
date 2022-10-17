@@ -105,8 +105,8 @@ describe("aAvaDAI", () => {
     const aAvaDAIAddress = "0x82E64f49Ed5EC1bC6e43DAD4FC8Af9bb3A2312EE"
     expect(await aAvaDAIVault.asset()).to.eq(aAvaDAIAddress)
     expect(await aAvaDAIVault.decimals()).to.eq(18)
-    expect(await aAvaDAIVault.name()).to.eq("aAvaDAIVault")
-    expect(await aAvaDAIVault.symbol()).to.eq("aAvaDAIV")
+    expect(await aAvaDAIVault.name()).to.eq("Nereus Aave Avalanche DAI Vault")
+    expect(await aAvaDAIVault.symbol()).to.eq("NaAvaDAI")
   })
 
   it("should verify aAvaDAIVCauldron deployment", async () => {
@@ -147,8 +147,8 @@ describe("aAvaDAI", () => {
     it("should verify oracle deployment", async () => {
       const { aAvaDAIVOracle, aAvaDAIVault } = await createTestEnv()
 
-      expect(await aAvaDAIVOracle.name("0x")).to.eq("aAvaDAIVault Chainlink")
-      expect(await aAvaDAIVOracle.symbol("0x")).to.eq("aAvaDAIV/USD")
+      expect(await aAvaDAIVOracle.name("0x")).to.eq("NaAvaDAI Chainlink")
+      expect(await aAvaDAIVOracle.symbol("0x")).to.eq("NaAvaDAI/USD")
       expect(await aAvaDAIVOracle.priceFeed()).to.eq("0x51D7180edA2260cc4F6e4EebB82FEF5c3c2B8300") //DAI ChainLink
       expect(await aAvaDAIVOracle.vault()).to.eq(aAvaDAIVault.address)
     })

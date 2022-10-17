@@ -6,9 +6,9 @@ task("deploy-p3-markets", "Deploy markets")
   .setAction(async ({ user }, hre) => {
     const { run, deployments } = hre
     await run("compile")
-    const options = { reset: true, noCompile: true }
+    const options = { noCompile: true }
 
-    await run("deploy", { tags: "VaultRewardSwapperV1", ...options })
+    await run("deploy", { tags: "VaultRewardSwapperV1", reset: true, ...options })
 
     await run("deploy", { tags: "aAvaUSDTVault", ...options })
     await run("deploy", { tags: "aAvaUSDTVOracle", ...options })

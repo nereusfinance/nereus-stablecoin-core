@@ -18,8 +18,8 @@ const ParametersPerChain: {
 } = {
   [ChainId.Avalanche]: {
     asset: "0x835866d37afb8cb8f8334dccdaf66cf01832ff5d", //qiDAI
-    name: vaultName,
-    symbol: "qiDAIV",
+    name: "Nereus Benqi DAI Vault",
+    symbol: "NqiDAI",
     idleBetweenCompoundsSeconds: 60 * 60 * 12, // 12 hours
     wrapAsset: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
     bentoBox: "0x0B1F9C2211F77Ec3Fa2719671c5646cf6e59B775",

@@ -12,8 +12,8 @@ const ParametersPerChain: {
   }
 } = {
   [ChainId.Avalanche]: {
-    name: "qiUSDCnVault Chainlink",
-    symbol: "qiUSDCnV/USD",
+    name: "NqiUSDCn Chainlink",
+    symbol: "NqiUSDCn/USD",
     priceFeed: "0xf096872672f44d6eba71458d74fe67f9a77a23b9", //USDC ChainLink
   },
 }

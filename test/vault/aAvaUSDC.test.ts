@@ -104,8 +104,8 @@ describe("aAvaUSDC", () => {
     const aAvaUSDCAddress = "0x625E7708f30cA75bfd92586e17077590C60eb4cD"
     expect(await aAvaUSDCVault.asset()).to.eq(aAvaUSDCAddress)
     expect(await aAvaUSDCVault.decimals()).to.eq(18)
-    expect(await aAvaUSDCVault.name()).to.eq("aAvaUSDCVault")
-    expect(await aAvaUSDCVault.symbol()).to.eq("aAvaUSDCV")
+    expect(await aAvaUSDCVault.name()).to.eq("Nereus Aave Avalanche USDC Vault")
+    expect(await aAvaUSDCVault.symbol()).to.eq("NaAvaUSDC")
   })
 
   it("should verify aAvaUSDCVCauldron deployment", async () => {

@@ -12,8 +12,8 @@ const ParametersPerChain: {
   }
 } = {
   [ChainId.Avalanche]: {
-    name: "aAvaUSDCVault Chainlink",
-    symbol: "aAvaUSDCV/USD",
+    name: "NaAvaUSDC Chainlink",
+    symbol: "NaAvaUSDC/USD",
     priceFeed: "0xf096872672f44d6eba71458d74fe67f9a77a23b9", //USDC ChainLink
   },
 }

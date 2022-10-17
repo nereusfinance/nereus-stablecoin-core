@@ -214,8 +214,8 @@ describe("qiDAI", () => {
       const qiDAIAddress = "0x835866d37AFB8CB8F8334dCCdaf66cf01832Ff5D"
       expect(await qiDAIVault.asset()).to.eq(qiDAIAddress)
       expect(await qiDAIVault.decimals()).to.eq(18)
-      expect(await qiDAIVault.name()).to.eq("qiDAIVault")
-      expect(await qiDAIVault.symbol()).to.eq("qiDAIV")
+      expect(await qiDAIVault.name()).to.eq("Nereus Benqi DAI Vault")
+      expect(await qiDAIVault.symbol()).to.eq("NqiDAI")
 
       const benQIAddress = await qiDAIVault.rewardAssets(0)
       expect(benQIAddress).to.eq("0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5")
@@ -397,8 +397,8 @@ describe("qiDAI", () => {
     it("should verify oracle deployment", async () => {
       const { qiDAIVOracle, qiDAIVault } = await createTestEnv()
 
-      expect(await qiDAIVOracle.name("0x")).to.eq("qiDAIVault Chainlink")
-      expect(await qiDAIVOracle.symbol("0x")).to.eq("qiDAIV/USD")
+      expect(await qiDAIVOracle.name("0x")).to.eq("NqiDAI Chainlink")
+      expect(await qiDAIVOracle.symbol("0x")).to.eq("NqiDAI/USD")
       expect(await qiDAIVOracle.priceFeed()).to.eq("0x51D7180edA2260cc4F6e4EebB82FEF5c3c2B8300") //DAI ChainLink
       expect(await qiDAIVOracle.vault()).to.eq(qiDAIVault.address)
     })
