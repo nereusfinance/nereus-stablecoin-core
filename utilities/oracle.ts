@@ -1,5 +1,6 @@
-import { IERC20Metadata, OracleMock } from "../typechain"
+import { IERC20Metadata, OracleMock, TokenizedVaultV1 } from "../typechain"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
+import { txWait } from "./tx"
 
 export const priceToRate = (priceUSD: string, decimals, { ethers }: HardhatRuntimeEnvironment) => {
   return ethers.BigNumber.from(10n ** (BigInt(decimals) + 8n)).div(
@@ -16,9 +17,36 @@ export const mockOraclePriceUsd = async (
 ) => {
   const tokenDecimals = await token.decimals()
   const exchangeRate = priceToRate(price, tokenDecimals, hre)
-  await oracle.set(exchangeRate)
-  await oracle.setSuccess(true)
-  await cauldron.updateExchangeRate()
+  await txWait(oracle.set(exchangeRate))
+  await txWait(oracle.setSuccess(true))
+  await txWait(cauldron.updateExchangeRate())
+}
+
+export const mockOraclePriceUsdByCauldron = async (
+  price,
+  cauldron,
+  hre: HardhatRuntimeEnvironment
+) => {
+  const oracleAddress = await cauldron.oracle()
+  const collateralAddress = await cauldron.collateral()
+  console.log("updating oracle...", oracleAddress)
+  const oracleMockArtifact = await hre.artifacts.readArtifact("OracleMock")
+  await hre.ethers.provider.send("hardhat_setCode", [
+    oracleAddress,
+    oracleMockArtifact.deployedBytecode,
+  ])
+
+  const oracle = await hre.ethers.getContractAt<OracleMock>("OracleMock", oracleAddress)
+  const token = await hre.ethers.getContractAt<TokenizedVaultV1>(
+    "TokenizedVaultV1",
+    collateralAddress
+  )
+
+  const tokenDecimals = await token.decimals()
+  const exchangeRate = priceToRate(price, tokenDecimals, hre)
+  await txWait(oracle.set(exchangeRate))
+  await txWait(oracle.setSuccess(true))
+  await txWait(cauldron.updateExchangeRate())
 }
 
 export const getOraclePriceUsd = async (

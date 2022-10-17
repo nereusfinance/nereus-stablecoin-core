@@ -24,6 +24,9 @@ if (process.env.SKIP_LOAD !== "true") {
   import("./tasks/minToBentobox")
   import("./tasks/printP3Deployments")
   import("./tasks/permitSignature")
+  import("./tasks/increaseTime")
+  import("./tasks/printRewardSwapEvents")
+  import("./tasks/mockOracleVaultPrice")
 }
 
 const accounts = {
