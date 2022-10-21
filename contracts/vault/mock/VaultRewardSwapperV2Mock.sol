@@ -130,7 +130,7 @@ contract VaultRewardSwapperV2Mock is Initializable, ManageableUpgradeable, IVaul
         emit RouteSet(tokenIn, tokenOut, actions);
     }
 
-    /// @notice The minimum amount requirements can be called only by owner
+    /// @notice Set minimum amount requirements can be called only by owner
     /// @param tokenIn The reward asset or wrapped asset
     /// @param minAmount The minimum rewards amount to start swap actions
     function setMinAmount(
