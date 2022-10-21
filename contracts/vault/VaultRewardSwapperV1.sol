@@ -183,7 +183,7 @@ contract VaultRewardSwapperV1 is Initializable, ManageableUpgradeable, IVaultRew
         SwapAction memory action,
         uint256 amountIn,
         address recipient
-    ) public returns (uint256) {
+    ) internal returns (uint256) {
         address joePair = IJoeFactory(joeFactory).getPair(action.tokenIn, action.tokenOut);
         require(joePair != address(0), "VaultRewardSwapperV1: joe pair not found");
         SafeERC20Upgradeable.safeTransfer(IERC20Upgradeable(action.tokenIn), joePair, amountIn);
