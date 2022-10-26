@@ -43,7 +43,7 @@ contract TokenizedVaultCompOracle is IOracle {
         address cUnderlying = ICERC20(vault.asset()).underlying();
         uint256 cUnderlyingDecimals = IERC20Metadata(cUnderlying).decimals();
         uint256 cExchangeRateDecimals = cUnderlyingDecimals + 18 - vaultAssetDecimals;
-        rateDividend = 10**(vaultAssetDecimals + priceFeed.decimals() + vaultDecimals - cExchangeRateDecimals);
+        rateDividend = 10**(vaultAssetDecimals + priceFeed.decimals() + vaultDecimals + cExchangeRateDecimals);
     }
 
     // Calculates the latest exchange rate
@@ -62,7 +62,7 @@ contract TokenizedVaultCompOracle is IOracle {
             ? 10**vaultAssetDecimals * uint256(answer)
             : (vault.totalAssets() * uint256(answer) * 10**vaultDecimals) / vaultTotalSupply;
 
-        return rateDividend * cExchangeRate / price;
+        return rateDividend / (price * cExchangeRate);
     }
 
     // Get the latest exchange rate

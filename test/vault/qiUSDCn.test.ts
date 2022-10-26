@@ -393,21 +393,23 @@ describe("qiUSDCn", () => {
       )
 
       const exchangeRate = await qiUSDCnVOracle.callStatic.peekSpot("0x")
-      const exchangeRateExpected = ethers.BigNumber.from("20168593915649447")
-      expect(exchangeRate).to.be.closeTo(exchangeRateExpected, 1e8)
+      const exchangeRateExpected = ethers.BigNumber.from("49577068793145655892")
+      expect(exchangeRate).to.be.closeTo(exchangeRateExpected, 1e12)
 
       const qiUnderlying = await ethers.getContractAt<IERC20Metadata>(
         "IERC20Metadata",
         await qiUSDCn.underlying()
       )
+      const cExchangeRateDecimals =
+        (await qiUnderlying.decimals()) + 18 - (await qiUSDCn.decimals())
       const rateToAggregatorPrice = ethers.BigNumber.from("10")
-        .pow(BigInt((await qiUSDCnVault.decimals()) + (await oracleAggregator.decimals())))
+        .pow(BigInt(25 + (await oracleAggregator.decimals())))
         .mul(await qiUSDCn.callStatic.exchangeRateCurrent())
-        .div(exchangeRate)
-        .div(10n ** BigInt((await qiUnderlying.decimals()) + 18 - (await qiUSDCn.decimals())))
+        .mul(exchangeRate)
+        .div(10n ** BigInt(cExchangeRateDecimals + (await qiUSDCnVault.decimals()) + 25))
 
       const latestRoundData = await oracleAggregator.latestRoundData()
-      expect(rateToAggregatorPrice).to.be.closeTo(latestRoundData.answer, 1000)
+      expect(rateToAggregatorPrice).to.be.closeTo(latestRoundData.answer, 1e5)
     })
   })
 })

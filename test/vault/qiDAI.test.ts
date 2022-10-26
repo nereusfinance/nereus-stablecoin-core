@@ -411,18 +411,19 @@ describe("qiDAI", () => {
         await qiDAIVOracle.priceFeed()
       )
       const exchangeRate = await qiDAIVOracle.callStatic.peekSpot("0x")
-      const exchangeRateExpected = ethers.BigNumber.from("21010594724690780")
-      expect(exchangeRate).to.be.closeTo(exchangeRateExpected, 1e9)
+      const exchangeRateExpected = ethers.BigNumber.from("47595035414435052555")
+      expect(exchangeRate).to.be.closeTo(exchangeRateExpected, 1e12)
 
       const qiUnderlying = await ethers.getContractAt<IERC20Metadata>(
         "IERC20Metadata",
         await qiDAI.underlying()
       )
+      const cExchangeRateDecimals = (await qiUnderlying.decimals()) + 18 - (await qiDAI.decimals())
       const rateToAggregatorPrice = ethers.BigNumber.from("10")
-        .pow(BigInt((await qiDAIVault.decimals()) + (await oracleAggregator.decimals())))
+        .pow(BigInt(25 + (await oracleAggregator.decimals())))
         .mul(await qiDAI.callStatic.exchangeRateCurrent())
-        .div(exchangeRate)
-        .div(10n ** BigInt((await qiUnderlying.decimals()) * 2 - (await qiDAI.decimals())))
+        .mul(exchangeRate)
+        .div(10n ** BigInt(cExchangeRateDecimals + (await qiDAIVault.decimals()) + 25))
 
       const latestRoundData = await oracleAggregator.latestRoundData()
       expect(rateToAggregatorPrice).to.be.closeTo(latestRoundData.answer, 10)
@@ -442,18 +443,19 @@ describe("qiDAI", () => {
         await qiDAIVOracle.priceFeed()
       )
       const exchangeRate = await qiDAIVOracle.callStatic.peekSpot("0x")
-      const exchangeRateExpected = ethers.BigNumber.from("21010594724690780")
-      expect(exchangeRate).to.be.closeTo(exchangeRateExpected, 1e9)
+      const exchangeRateExpected = ethers.BigNumber.from("47595035414435052555")
+      expect(exchangeRate).to.be.closeTo(exchangeRateExpected, 1e12)
 
       const qiUnderlying = await ethers.getContractAt<IERC20Metadata>(
         "IERC20Metadata",
         await qiDAI.underlying()
       )
+      const cExchangeRateDecimals = (await qiUnderlying.decimals()) + 18 - (await qiDAI.decimals())
       const rateToAggregatorPrice = ethers.BigNumber.from("10")
-        .pow(BigInt((await qiDAIVault.decimals()) + (await oracleAggregator.decimals())))
+        .pow(BigInt(25 + (await oracleAggregator.decimals())))
         .mul(await qiDAI.callStatic.exchangeRateCurrent())
-        .div(exchangeRate)
-        .div(10n ** BigInt((await qiUnderlying.decimals()) + 18 - (await qiDAI.decimals())))
+        .mul(exchangeRate)
+        .div(10n ** BigInt(cExchangeRateDecimals + (await qiDAIVault.decimals()) + 25))
 
       const latestRoundData = await oracleAggregator.latestRoundData()
       expect(rateToAggregatorPrice).to.be.closeTo(latestRoundData.answer, 10)
