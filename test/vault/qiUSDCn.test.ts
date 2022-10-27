@@ -403,10 +403,10 @@ describe("qiUSDCn", () => {
       const cExchangeRateDecimals =
         (await qiUnderlying.decimals()) + 18 - (await qiUSDCn.decimals())
       const rateToAggregatorPrice = ethers.BigNumber.from("10")
-        .pow(BigInt(25 + (await oracleAggregator.decimals())))
+        .pow(BigInt(await oracleAggregator.decimals()))
         .mul(await qiUSDCn.callStatic.exchangeRateCurrent())
         .mul(exchangeRate)
-        .div(10n ** BigInt(cExchangeRateDecimals + (await qiUSDCnVault.decimals()) + 25))
+        .div(10n ** BigInt(cExchangeRateDecimals + (await qiUSDCnVault.decimals())))
 
       const latestRoundData = await oracleAggregator.latestRoundData()
       expect(rateToAggregatorPrice).to.be.closeTo(latestRoundData.answer, 1e5)
