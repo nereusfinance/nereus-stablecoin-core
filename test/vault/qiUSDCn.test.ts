@@ -21,6 +21,7 @@ import {
   stopImpersonatingAccount,
 } from "@nomicfoundation/hardhat-network-helpers"
 import { forkAvalancheMainnet } from "../../utilities/fork"
+import { txWait } from "../../utilities/tx"
 
 type FixtureType = (options?: any) => Promise<{
   qiUSDCnVCauldron: CauldronV2
@@ -261,7 +262,43 @@ describe("qiUSDCn", () => {
       expect(await qiUSDCnVault.totalAssets()).to.eq(depositAmount)
       expect(await qiUSDCnVault.balanceOf(user1)).to.eq(sharesAmount)
 
-      await qiUSDCnVault.connect(signers.user1).redeem(sharesAmount, user1, user1)
+      const txReceipt = await txWait(
+        qiUSDCnVault.connect(signers.user1).redeem(sharesAmount, user1, user1)
+      )
+
+      const swapInterface = new ethers.utils.Interface([
+        "event Swap(address tokenIn, address tokenOut, uint256 amountIn, uint256 amountOut, address caller)",
+      ])
+      const parsedEvents = txReceipt.logs
+        .filter((log) => log.topics[0] === swapInterface.getEventTopic("Swap"))
+        .map((e) => {
+          const parsedLog = swapInterface.parseLog(e).args
+
+          return {
+            tokenIn: parsedLog.tokenIn,
+            tokenOut: parsedLog.tokenOut,
+            // amountIn: parsedLog.amountIn.toString(),
+            amountOut: parsedLog.amountOut.toString(),
+            caller: parsedLog.caller,
+          }
+        })
+
+      expect(parsedEvents).to.deep.eq([
+        {
+          tokenIn: "0x8729438EB15e2C8B576fCc6AeCdA6A148776C0F5",
+          tokenOut: "0xB715808a78F6041E46d61Cb123C9B4A27056AE9C",
+          // amountIn: "6757659043840386763",
+          amountOut: "351605732",
+          caller: "0xAEdBD8d56067779Dae129077E785315F458c444D",
+        },
+        {
+          tokenIn: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+          tokenOut: "0xB715808a78F6041E46d61Cb123C9B4A27056AE9C",
+          // amountIn: "3495340884745037",
+          amountOut: "330473805",
+          caller: "0xAEdBD8d56067779Dae129077E785315F458c444D",
+        },
+      ])
 
       expect(await qiUSDCnVault.totalAssets()).to.eq(0)
       expect(await qiUSDCnVault.balanceOf(user1)).to.eq(0)

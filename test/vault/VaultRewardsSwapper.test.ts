@@ -201,6 +201,27 @@ describe("VaultRewardsSwapper", () => {
           ],
         },
         {
+          startToken: benQiAddress,
+          endToken: qiUSDCnAddress,
+          actions: [
+            {
+              actionType: ActionType.JoeSwap,
+              tokenIn: benQiAddress,
+              tokenOut: wavaxAddress,
+            },
+            {
+              actionType: ActionType.JoeSwap,
+              tokenIn: wavaxAddress,
+              tokenOut: usdcAddress,
+            },
+            {
+              actionType: ActionType.cTokenMint,
+              tokenIn: usdcAddress,
+              tokenOut: qiUSDCnAddress,
+            },
+          ],
+        },
+        {
           startToken: wavaxAddress,
           endToken: qiUSDCnAddress,
           actions: [
