@@ -2,21 +2,7 @@
 pragma solidity ^0.8.0;
 
 interface ILiquidator {
-    /**
-     * Configuration for token that we should swap liquidated collateral to
-     * token - address of erc20 token
-     * percentage - how much percentages for liquidated collateral will be swapped to specified {token}
-     */
-    struct LiquidationSwapToken {
-        address token;
-        uint256 percentage;
-    }
 
-    /**
-    * Configuration for token liquidation strategy
-    * For cases when as a liquidation collateral some staked or LP token received and some liquidation strategy
-    * strategy - address of smart contract to that applies liquidation strategy
-     */
     struct TokenLiquidationStrategy {
         address strategy;
         bool shouldTransfer;
@@ -30,7 +16,6 @@ interface ILiquidator {
 
     event Liquidated(address origin, address[] destinations, uint256[] amounts);
     event TokenLiquidationStrategyAdded(address token, address strategy);
-    event LiquidationSwapTokenConfigurationSet(LiquidationSwapToken[] swapTokenConfiguration);
 
     function getBatchUserData(address _pool, address[] calldata users)
         external
