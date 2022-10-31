@@ -289,14 +289,14 @@ describe("qiUSDCn", () => {
           tokenOut: "0xB715808a78F6041E46d61Cb123C9B4A27056AE9C",
           // amountIn: "6757659043840386763",
           amountOut: "351605732",
-          caller: "0xAEdBD8d56067779Dae129077E785315F458c444D",
+          caller: qiUSDCnVault.address,
         },
         {
           tokenIn: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
           tokenOut: "0xB715808a78F6041E46d61Cb123C9B4A27056AE9C",
           // amountIn: "3495340884745037",
           amountOut: "330473805",
-          caller: "0xAEdBD8d56067779Dae129077E785315F458c444D",
+          caller: qiUSDCnVault.address,
         },
       ])
 
