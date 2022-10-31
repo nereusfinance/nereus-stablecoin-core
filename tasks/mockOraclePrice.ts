@@ -1,4 +1,4 @@
-import { task } from "hardhat/config";
+import { task } from "hardhat/config"
 
 const config = {
   Oracles: {
@@ -27,27 +27,31 @@ const config = {
     LINK: "0x0207B99E529310Eb413254B4504FE3F4a509f717",
     JLPWAVAXUSDC: "0xC0A7a7F141b6A5Bce3EC1B81823c8AFA456B6930",
   },
-};
+}
 
 task("mock-oracle-price", "Mock oracle price")
-  .addParam("asset", "Possible values: AVAX, WETH, WBTC, BTCb, DAI, USDC, av3CRV, sAVAX, JOE, LINK, JLPWAVAXUSDC")
+  .addParam(
+    "asset",
+    "Possible values: AVAX, WETH, WBTC, BTCb, DAI, USDC, av3CRV, sAVAX, JOE, LINK, JLPWAVAXUSDC"
+  )
   .setAction(async ({ asset }, { run, ethers, artifacts }) => {
-    await run("compile");
-    const oracleAddress = config.Oracles[asset];
+    await run("compile")
+    const oracleAddress = config.Oracles[asset]
     const overrideOracleName = {
       WETH: "ETHOracle",
       BTCb: "BTCOracle",
       WBTC: "BTCOracle",
-    };
-    const artifact = await artifacts.readArtifact(overrideOracleName[asset] ? overrideOracleName[asset] : `${asset}Oracle`);
-    console.log("updating oracle...", oracleAddress);
-    await ethers.provider.send("hardhat_setCode", [oracleAddress, artifact.deployedBytecode]);
+    }
+    const artifact = await artifacts.readArtifact(
+      overrideOracleName[asset] ? overrideOracleName[asset] : `${asset}Oracle`
+    )
+    console.log("updating oracle...", oracleAddress)
+    await ethers.provider.send("hardhat_setCode", [oracleAddress, artifact.deployedBytecode])
 
-    const cauldronAddress = config.Cauldrons[asset];
-    const cauldronFactory = await ethers.getContractFactory("CauldronV2");
-    const contractCauldron = await cauldronFactory.attach(cauldronAddress);
-    await (await contractCauldron.updateExchangeRate()).wait();
+    const cauldronAddress = config.Cauldrons[asset]
+    const contractCauldron = await ethers.getContractAt("CauldronV2", cauldronAddress)
+    await (await contractCauldron.updateExchangeRate()).wait()
 
-    console.log("done");
-    await ethers.provider.send("evm_mine", []);
-  });
+    console.log("done")
+    await ethers.provider.send("evm_mine", [])
+  })

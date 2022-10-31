@@ -1,82 +1,73 @@
-const { task } = require("hardhat/config");
-const fs = require("fs");
+const { task, subtask } = require("hardhat/config")
+const fs = require("fs")
 
-task("accounts", "Prints the list of accounts", require("./accounts"));
-require("./deployP1Markets");
-require("./deployP2Markets");
-require("./minToBentobox");
-require("./topUpAccount");
+task("accounts", "Prints the list of accounts", require("./accounts"))
+require("./deployP1Markets")
+require("./deployP2Markets")
+require("./minToBentobox")
+require("./minToBentoboxCallData")
+require("./minToBentoboxStatus")
 
 function getSortedFiles(dependenciesGraph) {
-  const tsort = require("tsort");
-  const graph = tsort();
+  const tsort = require("tsort")
+  const graph = tsort()
 
-  const filesMap = {};
-  const resolvedFiles = dependenciesGraph.getResolvedFiles();
-  resolvedFiles.forEach((f) => (filesMap[f.sourceName] = f));
+  const filesMap = {}
+  const resolvedFiles = dependenciesGraph.getResolvedFiles()
+  resolvedFiles.forEach((f) => (filesMap[f.sourceName] = f))
 
   for (const [from, deps] of dependenciesGraph.entries()) {
     for (const to of deps) {
-      graph.add(to.sourceName, from.sourceName);
+      graph.add(to.sourceName, from.sourceName)
     }
   }
 
-  const topologicalSortedNames = graph.sort();
+  const topologicalSortedNames = graph.sort()
 
   // If an entry has no dependency it won't be included in the graph, so we
   // add them and then dedup the array
-  const withEntries = topologicalSortedNames.concat(
-    resolvedFiles.map((f) => f.sourceName)
-  );
+  const withEntries = topologicalSortedNames.concat(resolvedFiles.map((f) => f.sourceName))
 
-  const sortedNames = [...new Set(withEntries)];
-  return sortedNames.map((n) => filesMap[n]);
+  const sortedNames = [...new Set(withEntries)]
+  return sortedNames.map((n) => filesMap[n])
 }
 
 function getFileWithoutImports(resolvedFile) {
-  const IMPORT_SOLIDITY_REGEX = /^\s*import(\s+)[\s\S]*?;\s*$/gm;
+  const IMPORT_SOLIDITY_REGEX = /^\s*import(\s+)[\s\S]*?;\s*$/gm
 
-  return resolvedFile.content.rawContent
-    .replace(IMPORT_SOLIDITY_REGEX, "")
-    .trim();
+  return resolvedFile.content.rawContent.replace(IMPORT_SOLIDITY_REGEX, "").trim()
 }
 
-subtask(
-  "flat:get-flattened-sources",
-  "Returns all contracts and their dependencies flattened"
-)
+subtask("flat:get-flattened-sources", "Returns all contracts and their dependencies flattened")
   .addOptionalParam("files", undefined, undefined, types.any)
   .addOptionalParam("output", undefined, undefined, types.string)
   .setAction(async ({ files, output }, { run }) => {
-    const dependencyGraph = await run("flat:get-dependency-graph", { files });
-    console.log(dependencyGraph);
+    const dependencyGraph = await run("flat:get-dependency-graph", { files })
+    console.log(dependencyGraph)
 
-    let flattened = "";
+    let flattened = ""
 
     if (dependencyGraph.getResolvedFiles().length === 0) {
-      return flattened;
+      return flattened
     }
 
-    const sortedFiles = getSortedFiles(dependencyGraph);
+    const sortedFiles = getSortedFiles(dependencyGraph)
 
-    let isFirst = true;
+    let isFirst = true
     for (const file of sortedFiles) {
       if (!isFirst) {
-        flattened += "\n";
+        flattened += "\n"
       }
-      flattened += `// File ${file.getVersionedName()}\n`;
-      flattened += `${getFileWithoutImports(file)}\n`;
+      flattened += `// File ${file.getVersionedName()}\n`
+      flattened += `${getFileWithoutImports(file)}\n`
 
-      isFirst = false;
+      isFirst = false
     }
 
     // Remove every line started with "// SPDX-License-Identifier:"
-    flattened = flattened.replace(
-      /SPDX-License-Identifier:/gm,
-      "License-Identifier:"
-    );
+    flattened = flattened.replace(/SPDX-License-Identifier:/gm, "License-Identifier:")
 
-    flattened = `// SPDX-License-Identifier: MIXED\n\n${flattened}`;
+    flattened = `// SPDX-License-Identifier: MIXED\n\n${flattened}`
 
     // Remove every line started with "pragma experimental ABIEncoderV2;" except the first one
     flattened = flattened.replace(
@@ -85,16 +76,16 @@ subtask(
         (i) => (m) =>
           !i++ ? m : ""
       )(0)
-    );
+    )
 
-    flattened = flattened.trim();
+    flattened = flattened.trim()
     if (output) {
-      console.log("Writing to", output);
-      fs.writeFileSync(output, flattened);
-      return "";
+      console.log("Writing to", output)
+      fs.writeFileSync(output, flattened)
+      return ""
     }
-    return flattened;
-  });
+    return flattened
+  })
 
 subtask("flat:get-dependency-graph")
   .addOptionalParam("files", undefined, undefined, types.any)
@@ -102,37 +93,27 @@ subtask("flat:get-dependency-graph")
     const sourcePaths =
       files === undefined
         ? await run("compile:solidity:get-source-paths")
-        : files.map((f) => fs.realpathSync(f));
+        : files.map((f) => fs.realpathSync(f))
 
     const sourceNames = await run("compile:solidity:get-source-names", {
       sourcePaths,
-    });
+    })
 
     const dependencyGraph = await run("compile:solidity:get-dependency-graph", {
       sourceNames,
-    });
+    })
 
-    return dependencyGraph;
-  });
+    return dependencyGraph
+  })
 
 task("flat", "Flattens and prints contracts and their dependencies")
-  .addOptionalVariadicPositionalParam(
-    "files",
-    "The files to flatten",
-    undefined,
-    types.inputFile
-  )
-  .addOptionalParam(
-    "output",
-    "Specify the output file",
-    undefined,
-    types.string
-  )
+  .addOptionalVariadicPositionalParam("files", "The files to flatten", undefined, types.inputFile)
+  .addOptionalParam("output", "Specify the output file", undefined, types.string)
   .setAction(async ({ files, output }, { run }) => {
     console.log(
       await run("flat:get-flattened-sources", {
         files,
         output,
       })
-    );
-  });
+    )
+  })

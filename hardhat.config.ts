@@ -1,26 +1,42 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import "dotenv/config";
-import "@nomiclabs/hardhat-etherscan";
-import "@nomiclabs/hardhat-solhint";
-import "@nomiclabs/hardhat-ethers";
-import "@nomiclabs/hardhat-waffle";
-import "@typechain/hardhat";
-import "@tenderly/hardhat-tenderly";
-import "hardhat-abi-exporter";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
-import "hardhat-deploy";
-import "./tasks";
-import "./tasks/mockOraclePrice";
-import "./tasks/setLiquidatorManager";
+import "dotenv/config"
+import "@nomiclabs/hardhat-etherscan"
+import "@nomiclabs/hardhat-solhint"
+import "@nomiclabs/hardhat-ethers"
+import "@nomiclabs/hardhat-waffle"
+import "@openzeppelin/hardhat-upgrades"
+import "@typechain/hardhat"
+import "@tenderly/hardhat-tenderly"
+import "hardhat-abi-exporter"
+import "hardhat-gas-reporter"
+import "solidity-coverage"
+import "hardhat-deploy"
+import "hardhat-watcher"
+import "hardhat-tracer"
+import "./tasks"
 
-import { HardhatUserConfig } from "hardhat/config";
+if (process.env.SKIP_LOAD !== "true") {
+  import("./tasks/mockOraclePrice")
+  import("./tasks/topUpAccount")
+  import("./tasks/configureVaultSwapper")
+  import("./tasks/setLiquidatorManager")
+  import("./tasks/deployP3Markets")
+  import("./tasks/minToBentobox")
+  import("./tasks/printP3Deployments")
+  import("./tasks/permitSignature")
+  import("./tasks/increaseTime")
+  import("./tasks/printRewardSwapEvents")
+  import("./tasks/mockOracleVaultPrice")
+}
 
 const accounts = {
   mnemonic: process.env.MNEMONIC || "test test test test test test test test test test test junk",
-};
+}
+const accountsFromPrivateKeys = process.env.DEPLOYER_PRIVATE_KEY
+  ? [process.env.DEPLOYER_PRIVATE_KEY]
+  : []
 
-const config: HardhatUserConfig = {
+const config = {
   defaultNetwork: "hardhat",
   abiExporter: {
     path: "./abi",
@@ -36,12 +52,12 @@ const config: HardhatUserConfig = {
     sources: process.env.CONTRACTS_PATH || "contracts",
     tests: "test",
   },
-  // etherscan: {
-  //   apiKey: {
-  //     avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
-  //     avalanche: process.env.SNOWTRACE_API_KEY,
-  //   },
-  // },
+  etherscan: {
+    apiKey: {
+      // avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY,
+      avalanche: process.env.SNOWTRACE_API_KEY,
+    },
+  },
   gasReporter: {
     coinmarketcap: process.env.COINMARKETCAP_API_KEY,
     currency: "USD",
@@ -51,24 +67,29 @@ const config: HardhatUserConfig = {
     deployer: {
       default: 0,
     },
-    alice: {
+    user1: {
       default: 1,
     },
-    bob: {
+    user2: {
       default: 2,
     },
-    carol: {
+    user3: {
       default: 3,
+    },
+    liquidatorManager: {
+      default: 4,
     },
   },
   networks: {
     localhost: {
+      url: "http://localhost:8545",
       live: false,
       saveDeployments: true,
       tags: ["local"],
     },
     nereusdev1: {
       url: process.env.NEREUS_DEV_RPC_URL1 || "",
+      accounts: accountsFromPrivateKeys,
     },
     nereusdev2: {
       url: process.env.NEREUS_DEV_RPC_URL2 || "",
@@ -78,17 +99,6 @@ const config: HardhatUserConfig = {
     },
     hardhat: {
       chainId: 43114,
-      // Seems to be a bug with this, even when false it complains about being unauthenticated.
-      // Reported to HardHat team and fix is incoming
-      mining: {
-        auto: false,
-        interval: 1000,
-      },
-      forking: {
-        enabled: process.env.FORKING === "true",
-        url: "https://api.avax.network/ext/bc/C/rpc",
-        blockNumber: (process.env.FORKING === "true" && parseInt(process.env.FORKING_BLOCK!)) || undefined,
-      },
       accounts,
       gasPrice: 0,
       initialBaseFeePerGas: 0,
@@ -99,16 +109,8 @@ const config: HardhatUserConfig = {
     avalanche: {
       chainId: 43114,
       url: "https://api.avax.network/ext/bc/C/rpc",
-      accounts,
+      accounts: accountsFromPrivateKeys,
       gasPrice: 75 * 1e9,
-      live: true,
-      saveDeployments: true,
-      tags: ["prod"],
-    },
-    fuji: {
-      chainId: 43113,
-      url: "https://api.avax-test.network/ext/bc/C/rpc",
-      accounts,
       live: true,
       saveDeployments: true,
       tags: ["prod"],
@@ -121,6 +123,25 @@ const config: HardhatUserConfig = {
   tenderly: {
     project: process.env.TENDERLY_PROJECT || "project",
     username: process.env.TENDERLY_USERNAME || "",
+  },
+  watcher: {
+    contractsAndTests: {
+      tasks: [],
+      start: "echo compiling... && npx hardhat test",
+      files: ["./test/**/*", "./contracts/"],
+      verbose: true,
+      runOnLaunch: true,
+    },
+    testsNoCompile: {
+      tasks: [
+        {
+          command: "test",
+          params: { noCompile: true, testFiles: ["{path}"], trace: true },
+        },
+      ],
+      files: ["./test/**/*"],
+      verbose: true,
+    },
   },
   solidity: {
     compilers: [
@@ -425,8 +446,8 @@ const config: HardhatUserConfig = {
       },
     },
   },
-};
+}
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
-export default config;
+export default config
